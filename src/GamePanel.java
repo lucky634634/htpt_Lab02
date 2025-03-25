@@ -17,7 +17,7 @@ public class GamePanel extends JPanel implements Runnable {
     private int _intY = 0;
     private float _moveTime = 0;
     private final float SPEED = 5f;
-    private final GameInput _gameInput = new GameInput();
+    private final static GameInput _gameInput = new GameInput();
 
     public GamePanel() {
         setPreferredSize(new Dimension(MAZE_WIDTH * MAZE_UNIT, MAZE_HEIGHT * MAZE_UNIT));
@@ -30,6 +30,9 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     private void Update() {
+        if (_gameInput.GetKey(KeyEvent.VK_ESCAPE)) {
+            _isRunning = false;
+        }
         if (_moveTime <= 0) {
             if (_gameInput.GetKey(KeyEvent.VK_UP)) {
                 _intY--;
@@ -53,7 +56,7 @@ public class GamePanel extends JPanel implements Runnable {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.setColor(Color.WHITE);
+        g.setColor(new Color(50, 50, 50));
         for (int i = 0; i < MAZE_WIDTH; i++) {
             g.drawLine(i * MAZE_UNIT, 0, i * MAZE_UNIT, MAZE_HEIGHT * MAZE_UNIT);
         }
@@ -86,5 +89,6 @@ public class GamePanel extends JPanel implements Runnable {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        System.exit(0);
     }
 }

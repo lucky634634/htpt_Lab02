@@ -9,6 +9,7 @@ public class GameInput extends KeyAdapter {
 
     @Override
     public void keyPressed(KeyEvent e) {
+        System.out.println("Key pressed: " + e.getKeyCode());
         _keyCurrent.put(e.getKeyCode(), true);
     }
 
