@@ -26,6 +26,9 @@ public class GamePanel extends JPanel implements Runnable {
         addKeyListener(_gameInput);
         _isRunning = true;
         _moveTime = 1f / SPEED;
+    }
+
+    public void Run() {
         new Thread(this).start();
     }
 
@@ -73,21 +76,20 @@ public class GamePanel extends JPanel implements Runnable {
     public void run() {
         long lastTime = System.currentTimeMillis();
         long currentTime;
-        try {
-            while (_isRunning) {
-                currentTime = System.currentTimeMillis();
-                _deltaTime = (currentTime - lastTime) / 1000.0f;
-                lastTime = currentTime;
-                _gameInput.UpdateKey();
-                Update();
-                repaint();
-                long elapsedTime = System.currentTimeMillis() - lastTime;
-                long sleepTime = (long) (1000.0f / FPS) - elapsedTime;
+        while (_isRunning) {
+            currentTime = System.currentTimeMillis();
+            _deltaTime = (currentTime - lastTime) / 1000.0f;
+            lastTime = currentTime;
+            _gameInput.UpdateKey();
+            Update();
+            repaint();
+            long elapsedTime = System.currentTimeMillis() - lastTime;
+            long sleepTime = (long) (1000.0f / FPS) - elapsedTime;
+            try {
                 if (sleepTime > 0)
                     Thread.sleep(sleepTime);
+            } catch (InterruptedException e) {
             }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
         System.exit(0);
     }

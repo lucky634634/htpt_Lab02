@@ -7,6 +7,8 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 
 public class GameFrame extends JFrame {
+    private GamePanel _gamePanel = new GamePanel();
+
     public GameFrame() {
         // add(new GamePanel());
         // pack();
@@ -14,7 +16,7 @@ public class GameFrame extends JFrame {
                 GamePanel.MAZE_UNIT + 200);
 
         setLayout(new BorderLayout());
-        add(new GamePanel(), BorderLayout.NORTH);
+        add(_gamePanel, BorderLayout.NORTH);
 
         JTextArea consoleLog = new JTextArea();
         JScrollPane consoleScroll = new JScrollPane(consoleLog);
@@ -34,5 +36,9 @@ public class GameFrame extends JFrame {
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
+    }
+
+    public void Run() {
+        _gamePanel.Run();
     }
 }
