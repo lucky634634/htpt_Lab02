@@ -1,18 +1,31 @@
-## Getting Started
+# Hệ thống phân tán - Lab 2 - Zace game
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+## Mô tả
 
-## Folder Structure
+## Người thực hiện
 
-The workspace contains two folders by default, where:
+- Huỳnh Đăng Khoa - 21127077
+- Trần Hà Minh Nhật - 21127658
 
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
+## Thực thi
 
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
+### Windows
 
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
+```powershell
+# Compile
+cmd /c .\compile.bat
+# Run
+cmd /c .\run.bat
+```
 
-## Dependency Management
+### Linux
 
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+```bash
+# Compile
+chmod +x compile.sh
+./compile.sh
+
+# Run
+chmod +x run.sh
+./run.sh
+```

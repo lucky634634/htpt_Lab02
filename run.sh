@@ -1,5 +1,4 @@
-@echo off
+#!/bin/bash
 
 cd build
 java -jar App.jar
-pause
