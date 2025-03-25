@@ -9,5 +9,5 @@
     "java.project.exportJar.targetPath": "${workspaceFolder}/build/App.jar",
     "cSpell.words": [
         "Zace"
-    ]
+    ],
 }
