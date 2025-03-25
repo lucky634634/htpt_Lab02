@@ -6,5 +6,8 @@
     "java.project.referencedLibraries": [
         "lib/**/*.jar"
     ],
-    "java.project.exportJar.targetPath": "${workspaceFolder}/build/App.jar"
+    "java.project.exportJar.targetPath": "${workspaceFolder}/build/App.jar",
+    "cSpell.words": [
+        "Zace"
+    ]
 }
