@@ -19,8 +19,8 @@ public class GameFrame extends JFrame {
         JTextArea consoleLog = new JTextArea();
         JScrollPane consoleScroll = new JScrollPane(consoleLog);
 
-        String[] columns = { "Column 1", "Column 2" };
-        Object[][] data = { { "Data 1", "Data 2" }, { "Data 3", "Data 4" } };
+        String[] columns = { "Player", "Score" };
+        Object[][] data = { { "A", "0" }, { "B", "0" } };
         JTable table = new JTable(data, columns);
         JScrollPane tableScroll = new JScrollPane(table);
 
