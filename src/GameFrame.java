@@ -7,13 +7,13 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 
 public class GameFrame extends JFrame {
-    private GamePanel _gamePanel = new GamePanel();
+    private final GamePanel _gamePanel = new GamePanel();
 
     public GameFrame() {
         // add(new GamePanel());
         // pack();
         setSize(GamePanel.MAZE_WIDTH * GamePanel.MAZE_UNIT, GamePanel.MAZE_HEIGHT *
-                GamePanel.MAZE_UNIT + 200);
+                GamePanel.MAZE_UNIT + 300);
 
         setLayout(new BorderLayout());
         add(_gamePanel, BorderLayout.NORTH);

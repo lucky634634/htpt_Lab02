@@ -93,4 +93,7 @@ public class GamePanel extends JPanel implements Runnable {
         }
         System.exit(0);
     }
+
+    public void SmoothMove(int currentX, int currentY, int targetX, int targetY) {
+    }
 }
