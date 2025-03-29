@@ -25,9 +25,10 @@ public class Maze {
     public void Draw(Graphics g) {
         g.setColor(Color.WHITE);
         g.fillRect(0, 0, width * GamePanel.MAZE_UNIT, height * GamePanel.MAZE_UNIT);
-
-        for (int i = 0; i < width * height; i++) {
-            cells.get(i).Draw(g);
+        if (width == 0 || height == 0)
+            return;
+        for (Cell cell : cells) {
+            cell.Draw(g);
         }
     }
 

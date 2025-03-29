@@ -4,22 +4,25 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.geom.AffineTransform;
+import java.util.ArrayList;
 
 public class Tank {
     public int x = 0;
     public int y = 0;
 
-    public Direction direction = Direction.NONE; // U D L R
+    public Direction direction = Direction.UP; // U D L R
     public Color color = Color.RED;
 
     private Image _image = null;
-    private final int MAZE_UNIT = GamePanel.MAZE_UNIT;
+    private static final int MAZE_UNIT = GamePanel.MAZE_UNIT;
 
-    public final float SPEED = 2f;
-    public final float ROTATION_SPEED = 2f;
+    public static final float SPEED = 2f;
+    public static final float ROTATION_SPEED = 2f;
+    public static final float FIRE_RATE = SPEED;
 
     private float _moveTime = 0;
     private float _rotateTime = 0;
+    private float _fireTime = 0;
 
     public Tank(Image image) {
         this._image = image;
@@ -28,6 +31,7 @@ public class Tank {
     public void Init(int x, int y) {
         _moveTime = 0;
         _rotateTime = 0;
+        _fireTime = 0;
         this.x = x;
         this.y = y;
     }
@@ -80,5 +84,14 @@ public class Tank {
     public void Update(float deltaTime) {
         _moveTime -= deltaTime;
         _rotateTime -= deltaTime;
+        _fireTime -= deltaTime;
+    }
+
+    public void Shoot(ArrayList<Bullet> bullets) {
+        if (_fireTime > 0)
+            return;
+        System.out.println("Fire");
+        _fireTime = 1 / FIRE_RATE;
+        bullets.add(new Bullet(x, y, direction));
     }
 }
