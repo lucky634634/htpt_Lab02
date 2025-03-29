@@ -24,22 +24,10 @@ public class ConsolePanel extends JPanel {
     }
 
     public void Init() {
-        _consoleText.setText("lorem ipsum\n");
-        _consoleText.append("lorem ipsum\n");
-        _consoleText.append("lorem ipsum\n");
-        _consoleText.append("lorem ipsum\n");
-        _consoleText.append("lorem ipsum\n");
-        _consoleText.append("lorem ipsum\n");
-        _consoleText.append("lorem ipsum\n");
-        _consoleText.append("lorem ipsum\n");
-        _consoleText.append("lorem ipsum\n");
-        _consoleText.append("lorem ipsum\n");
-        _consoleText.append("lorem ipsum\n");
-        _consoleText.append("lorem ipsum\n");
-        _consoleText.append("lorem ipsum\n");
-        _consoleText.append("lorem ipsum\n");
-        _consoleText.append("lorem ipsum\n");
-        _consoleText.append("lorem ipsum\n");
-        _consoleText.append("lorem ipsum\n");
+    }
+
+    public void Log(String message) {
+        _consoleText.append(message + "\n");
+        _consoleText.setCaretPosition(_consoleText.getDocument().getLength());
     }
 }

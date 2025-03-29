@@ -1,7 +1,7 @@
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.event.KeyEvent;
+import java.util.Random;
 import javax.swing.JPanel;
 
 public class GamePanel extends JPanel implements Runnable {
@@ -19,6 +19,10 @@ public class GamePanel extends JPanel implements Runnable {
     private final float SPEED = 5f;
     private final static GameInput _gameInput = new GameInput();
 
+    private final Tank _player = new Tank(Color.GREEN);
+
+    private final Random _random = new Random();
+
     public GamePanel() {
         setPreferredSize(new Dimension(MAZE_WIDTH * MAZE_UNIT, MAZE_HEIGHT * MAZE_UNIT));
         setBackground(Color.BLACK);
@@ -28,32 +32,16 @@ public class GamePanel extends JPanel implements Runnable {
         _moveTime = 1f / SPEED;
     }
 
+    public void Init() {
+        _player.x = _random.nextInt(MAZE_WIDTH);
+        _player.y = _random.nextInt(MAZE_HEIGHT);
+    }
+
     public void Run() {
         new Thread(this).start();
     }
 
     private void Update() {
-        if (_gameInput.GetKey(KeyEvent.VK_ESCAPE)) {
-            _isRunning = false;
-        }
-        if (_moveTime <= 0) {
-            if (_gameInput.GetKey(KeyEvent.VK_UP)) {
-                _intY--;
-                _moveTime = 1f / SPEED;
-            } else if (_gameInput.GetKey(KeyEvent.VK_DOWN)) {
-                _intY++;
-                _moveTime = 1f / SPEED;
-                _moveTime = 1f / SPEED;
-            } else if (_gameInput.GetKey(KeyEvent.VK_LEFT)) {
-                _intX--;
-                _moveTime = 1f / SPEED;
-            } else if (_gameInput.GetKey(KeyEvent.VK_RIGHT)) {
-                _intX++;
-                _moveTime = 1f / SPEED;
-            }
-        } else {
-            _moveTime -= _deltaTime;
-        }
     }
 
     @Override
@@ -66,8 +54,9 @@ public class GamePanel extends JPanel implements Runnable {
         for (int j = 0; j < MAZE_HEIGHT; j++) {
             g.drawLine(0, j * MAZE_UNIT, MAZE_WIDTH * MAZE_UNIT, j * MAZE_UNIT);
         }
-        g.setColor(Color.RED);
-        g.fillOval(_intX * MAZE_UNIT, _intY * MAZE_UNIT, MAZE_UNIT, MAZE_UNIT);
+
+        _player.Draw(g);
+
         g.setColor(Color.WHITE);
         g.drawString("FPS: " + (int) (1f / _deltaTime), 10, 10);
     }
