@@ -1,4 +1,6 @@
 
+import java.awt.Color;
+import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -8,10 +10,12 @@ public class Maze {
 
     public void Generate(int width, int height) {
         cells.clear();
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
-                cells.add(new Cell(i, j));
-            }
+        for (int i = 0; i < width * height; i++) {
+            cells.add(new Cell(i % width, i / width));
         }
+    }
+
+    public void Draw(Graphics g) {
+        g.setColor(Color.WHITE);
     }
 }
