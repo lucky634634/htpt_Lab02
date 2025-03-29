@@ -1,38 +1,40 @@
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.GridLayout;
 import javax.swing.JFrame;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTable;
-import javax.swing.JTextArea;
+import javax.swing.JPanel;
 
 public class GameFrame extends JFrame {
+    private final GamePanel _gamePanel = new GamePanel();
+    private final ConsolePanel _consolePanel = new ConsolePanel();
+    private final ScorePanel _scorePanel = new ScorePanel();
+
     public GameFrame() {
         // add(new GamePanel());
         // pack();
-        setSize(GamePanel.MAZE_WIDTH * GamePanel.MAZE_UNIT, GamePanel.MAZE_HEIGHT *
-                GamePanel.MAZE_UNIT + 200);
-
         setLayout(new BorderLayout());
-        add(new GamePanel(), BorderLayout.NORTH);
+        add(_gamePanel, BorderLayout.CENTER);
 
-        JTextArea consoleLog = new JTextArea();
-        JScrollPane consoleScroll = new JScrollPane(consoleLog);
+        JPanel bottomPanel = new JPanel();
+        bottomPanel.setPreferredSize(new Dimension(GamePanel.MAZE_WIDTH * GamePanel.MAZE_UNIT, 200));
+        bottomPanel.setLayout(new GridLayout(1, 2));
+        bottomPanel.add(_consolePanel);
+        bottomPanel.add(_scorePanel);
+        add(bottomPanel, BorderLayout.SOUTH);
 
-        String[] columns = { "Player", "Score" };
-        Object[][] data = { { "A", "0" }, { "B", "0" } };
-        JTable table = new JTable(data, columns);
-        JScrollPane tableScroll = new JScrollPane(table);
-
-        // Split Console and Table
-        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-                consoleScroll, tableScroll);
-        splitPane.setDividerLocation(400);
-        add(splitPane, BorderLayout.CENTER);
+        pack();
         setLocationRelativeTo(null);
         setTitle("Zace game");
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
+    }
+
+    public void Run() {
+        _gamePanel.Init();
+        _gamePanel.Run();
+        _scorePanel.Init();
+        _consolePanel.Init();
     }
 }
