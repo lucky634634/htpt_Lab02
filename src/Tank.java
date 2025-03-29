@@ -4,22 +4,32 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.geom.AffineTransform;
-import javax.swing.ImageIcon;
 
 public class Tank {
     public int x = 0;
     public int y = 0;
 
-    public char direction = 'U'; // U D L R
+    public Direction direction = Direction.NONE; // U D L R
     public Color color = Color.RED;
 
-    private final Image _image = new ImageIcon("assets/tank1.png").getImage();
+    private Image _image = null;
     private final int MAZE_UNIT = GamePanel.MAZE_UNIT;
 
-    public final int SPEED = 2;
+    public final float SPEED = 2f;
+    public final float ROTATION_SPEED = 2f;
 
-    public Tank(Color color) {
-        this.color = color;
+    private float _moveTime = 0;
+    private float _rotateTime = 0;
+
+    public Tank(Image image) {
+        this._image = image;
+    }
+
+    public void Init(int x, int y) {
+        _moveTime = 0;
+        _rotateTime = 0;
+        this.x = x;
+        this.y = y;
     }
 
     public void Draw(Graphics g) {
@@ -30,17 +40,45 @@ public class Tank {
 
         AffineTransform originalTransform = g2d.getTransform();
         switch (direction) {
-            case 'U' -> {
+            case UP -> g2d.rotate(Math.toRadians(0), centerX, centerY);
+            case LEFT -> g2d.rotate(Math.toRadians(270), centerX, centerY);
+            case DOWN -> g2d.rotate(Math.toRadians(180), centerX, centerY);
+            case RIGHT -> g2d.rotate(Math.toRadians(90), centerX, centerY);
+            case NONE -> {
             }
-            case 'L' -> g2d.rotate(Math.toRadians(270), centerX, centerY);
-            case 'D' -> g2d.rotate(Math.toRadians(180), centerX, centerY);
-            case 'R' -> g2d.rotate(Math.toRadians(90), centerX, centerY);
         }
         g2d.drawImage(_image, x * MAZE_UNIT, y * MAZE_UNIT, MAZE_UNIT, MAZE_UNIT, null);
         g2d.setTransform(originalTransform);
     }
 
-    public void Move(Maze maze, char direction) {
+    public void SetPosition(int x, int y) {
+        this.x = x;
+        this.y = y;
     }
 
+    public void Move(Maze maze, Direction dir) {
+        if (dir != Direction.NONE && dir != direction) {
+            direction = dir;
+            _rotateTime = 1 / ROTATION_SPEED;
+            return;
+        }
+        if (_moveTime > 0 || _rotateTime > 0)
+            return;
+        _moveTime = 1 / SPEED;
+        if (maze.CheckMove(x, y, dir)) {
+            switch (dir) {
+                case UP -> y -= 1;
+                case DOWN -> y += 1;
+                case LEFT -> x -= 1;
+                case RIGHT -> x += 1;
+                case NONE -> {
+                }
+            }
+        }
+    }
+
+    public void Update(float deltaTime) {
+        _moveTime -= deltaTime;
+        _rotateTime -= deltaTime;
+    }
 }

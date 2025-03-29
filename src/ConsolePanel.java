@@ -1,6 +1,7 @@
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.time.LocalTime;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -24,10 +25,12 @@ public class ConsolePanel extends JPanel {
     }
 
     public void Init() {
+        _consoleText.setText("");
     }
 
     public void Log(String message) {
-        _consoleText.append(message + "\n");
+        LocalTime localTime = LocalTime.now();
+        _consoleText.append("[" + localTime.toString() + "] " + message + "\n");
         _consoleText.setCaretPosition(_consoleText.getDocument().getLength());
     }
 }
