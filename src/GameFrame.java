@@ -32,7 +32,7 @@ public class GameFrame extends JFrame {
     }
 
     public void Run() {
-        _gamePanel.Init();
+        _gamePanel.Setup();
         _gamePanel.Run();
         _scorePanel.Init();
         _consolePanel.Init();

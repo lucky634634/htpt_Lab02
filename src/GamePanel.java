@@ -35,7 +35,7 @@ public class GamePanel extends JPanel implements Runnable {
         _isRunning = false;
     }
 
-    public void Init() {
+    public void Setup() {
         _player.x = _random.nextInt(MAZE_WIDTH);
         _player.y = _random.nextInt(MAZE_HEIGHT);
         _maze.Generate(MAZE_WIDTH, MAZE_HEIGHT, 0);

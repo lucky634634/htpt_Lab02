@@ -17,11 +17,9 @@ public class Tank {
     private static final int MAZE_UNIT = GamePanel.MAZE_UNIT;
 
     public static final float SPEED = 2f;
-    public static final float ROTATION_SPEED = 2f;
     public static final float FIRE_RATE = SPEED;
 
     private float _moveTime = 0;
-    private float _rotateTime = 0;
     private float _fireTime = 0;
 
     public Tank(Image image) {
@@ -30,7 +28,6 @@ public class Tank {
 
     public void Init(int x, int y) {
         _moveTime = 0;
-        _rotateTime = 0;
         _fireTime = 0;
         this.x = x;
         this.y = y;
@@ -63,10 +60,10 @@ public class Tank {
     public void Move(Maze maze, Direction dir) {
         if (dir != Direction.NONE && dir != direction) {
             direction = dir;
-            _rotateTime = 1 / ROTATION_SPEED;
+            _moveTime = 1 / SPEED;
             return;
         }
-        if (_moveTime > 0 || _rotateTime > 0)
+        if (_moveTime > 0)
             return;
         _moveTime = 1 / SPEED;
         if (maze.CheckMove(x, y, dir)) {
@@ -83,7 +80,6 @@ public class Tank {
 
     public void Update(float deltaTime) {
         _moveTime -= deltaTime;
-        _rotateTime -= deltaTime;
         _fireTime -= deltaTime;
     }
 
