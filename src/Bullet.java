@@ -7,7 +7,7 @@ public class Bullet {
     public Direction direction = Direction.NONE;
 
     private final Color _color = Color.RED;
-    private final int SIZE = GamePanel.MAZE_UNIT / 2;
+    private final int SIZE = GamePanel.MAZE_UNIT / 4;
     private final float SPEED = Tank.SPEED * 4;
 
     private float _moveTime = 0;
@@ -24,6 +24,10 @@ public class Bullet {
         if (_moveTime > 0)
             return;
         _moveTime = 1 / SPEED;
+        if (!Maze.GetInstance().CheckMove(x, y, direction)) {
+            direction = Direction.NONE;
+            return;
+        }
         switch (direction) {
             case UP -> y -= 1;
             case DOWN -> y += 1;

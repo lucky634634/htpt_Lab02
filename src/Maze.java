@@ -11,6 +11,20 @@ public class Maze {
     public final ArrayList<Cell> cells = new ArrayList<>();
     private int width = 32, height = 16;
 
+    private static Maze _instance = null;
+
+    public static Maze GetInstance() {
+        if (_instance == null) {
+            synchronized (Maze.class) {
+                _instance = new Maze();
+            }
+        }
+        return _instance;
+    }
+
+    private Maze() {
+    }
+
     public void Generate(int width, int height, int seed) {
         cells.clear();
         this.width = width;

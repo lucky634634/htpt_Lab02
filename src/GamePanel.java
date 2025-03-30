@@ -2,8 +2,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Random;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
@@ -19,13 +17,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     private final static GameInput _gameInput = new GameInput();
 
-    private final Tank _player = new Tank(new ImageIcon("assets/tank1.png").getImage());
-    private final Maze _maze = new Maze();
-
     private final Random _random = new Random();
-
-    private final static ArrayList<Bullet> _bullets = new ArrayList<>();
-    private final static ArrayList<Tank> _enemies = new ArrayList<>();
 
     public GamePanel() {
         setPreferredSize(new Dimension(MAZE_WIDTH * MAZE_UNIT, MAZE_HEIGHT * MAZE_UNIT));
@@ -36,12 +28,12 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void Setup() {
-        _player.x = _random.nextInt(MAZE_WIDTH);
-        _player.y = _random.nextInt(MAZE_HEIGHT);
-        _maze.Generate(MAZE_WIDTH, MAZE_HEIGHT, 0);
-        _bullets.clear();
-        _enemies.clear();
         _isRunning = true;
+        Maze.GetInstance().Generate(MAZE_WIDTH, MAZE_HEIGHT, 0);
+        TankManager.GetInstance().Clear();
+        TankManager.GetInstance().AddTank(new Tank(new ImageIcon("assets/tank1.png").getImage()));
+        TankManager.GetInstance().GetTank(0).SetPosition(_random.nextInt(MAZE_WIDTH), _random.nextInt(MAZE_HEIGHT));
+        BulletManager.GetInstance().Clear();
     }
 
     public void Run() {
@@ -49,29 +41,22 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     private void Update() {
-        if (_gameInput.GetKey(KeyEvent.VK_UP))
-            _player.Move(_maze, Direction.UP);
-        else if (_gameInput.GetKey(KeyEvent.VK_DOWN))
-            _player.Move(_maze, Direction.DOWN);
-        else if (_gameInput.GetKey(KeyEvent.VK_LEFT))
-            _player.Move(_maze, Direction.LEFT);
-        else if (_gameInput.GetKey(KeyEvent.VK_RIGHT))
-            _player.Move(_maze, Direction.RIGHT);
-
         if (_gameInput.GetKey(KeyEvent.VK_SPACE)) {
-            _player.Shoot(_bullets);
+            TankManager.GetInstance().GetTank(0).Shoot();
         }
 
-        _player.Update(_deltaTime);
-        Iterator<Bullet> bulletIterator = _bullets.iterator();
-        while (bulletIterator.hasNext()) {
-            Bullet bullet = bulletIterator.next(); // Move iterator once and store bullet reference
-            bullet.Update(_deltaTime);
-
-            if (bullet.x < 0 || bullet.x >= MAZE_WIDTH || bullet.y < 0 || bullet.y >= MAZE_HEIGHT) {
-                bulletIterator.remove(); // Safe way to remove while iterating
-            }
+        if (_gameInput.GetKey(KeyEvent.VK_UP)) {
+            TankManager.GetInstance().GetTank(0).Move(Direction.UP);
+        } else if (_gameInput.GetKey(KeyEvent.VK_DOWN)) {
+            TankManager.GetInstance().GetTank(0).Move(Direction.DOWN);
+        } else if (_gameInput.GetKey(KeyEvent.VK_LEFT)) {
+            TankManager.GetInstance().GetTank(0).Move(Direction.LEFT);
+        } else if (_gameInput.GetKey(KeyEvent.VK_RIGHT)) {
+            TankManager.GetInstance().GetTank(0).Move(Direction.RIGHT);
         }
+
+        TankManager.GetInstance().Update(_deltaTime);
+        BulletManager.GetInstance().Update(_deltaTime);
     }
 
     @Override
@@ -79,12 +64,10 @@ public class GamePanel extends JPanel implements Runnable {
         super.paintComponent(g);
         if (!_isRunning)
             return;
-        _maze.Draw(g);
-        _player.Draw(g);
 
-        for (Bullet bullet : _bullets) {
-            bullet.Draw(g);
-        }
+        Maze.GetInstance().Draw(g);
+        TankManager.GetInstance().Draw(g);
+        BulletManager.GetInstance().Draw(g);
         g.setColor(Color.WHITE);
         g.drawString("FPS: " + (int) (1f / _deltaTime), 10, 10);
 
@@ -99,7 +82,6 @@ public class GamePanel extends JPanel implements Runnable {
                 currentTime = System.currentTimeMillis();
                 _deltaTime = (currentTime - lastTime) / 1000.0f;
                 lastTime = currentTime;
-                _gameInput.UpdateKey();
                 Update();
                 repaint();
                 long elapsedTime = System.currentTimeMillis() - lastTime;
