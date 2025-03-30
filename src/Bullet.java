@@ -5,14 +5,15 @@ public class Bullet {
     public int x = 0;
     public int y = 0;
     public Direction direction = Direction.NONE;
+    public int tankId = 0;
 
     private final Color _color = Color.RED;
-    private final int SIZE = GamePanel.MAZE_UNIT / 2;
+    private final int SIZE = GamePanel.MAZE_UNIT / 4;
     private final float SPEED = Tank.SPEED * 4;
 
     private float _moveTime = 0;
 
-    public Bullet(int x, int y, Direction direction) {
+    public Bullet(int x, int y, Direction direction, int tankId) {
         this.x = x;
         this.y = y;
         this.direction = direction;
@@ -24,6 +25,10 @@ public class Bullet {
         if (_moveTime > 0)
             return;
         _moveTime = 1 / SPEED;
+        if (!Maze.GetInstance().CheckMove(x, y, direction)) {
+            direction = Direction.NONE;
+            return;
+        }
         switch (direction) {
             case UP -> y -= 1;
             case DOWN -> y += 1;
@@ -32,6 +37,14 @@ public class Bullet {
             case NONE -> {
             }
         }
+        Tank tank = TankManager.GetInstance().GetTankByPosition(x, y);
+        if (tank == null)
+            return;
+        if (tankId == TankManager.GetInstance().GetIndex(tank)) {
+            return;
+        }
+        direction = Direction.NONE;
+        tank.Hit();
     }
 
     public void Draw(Graphics g) {

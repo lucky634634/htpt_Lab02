@@ -4,7 +4,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.geom.AffineTransform;
-import java.util.ArrayList;
 
 public class Tank {
     public int x = 0;
@@ -57,7 +56,7 @@ public class Tank {
         this.y = y;
     }
 
-    public void Move(Maze maze, Direction dir) {
+    public void Move(Direction dir) {
         if (dir != Direction.NONE && dir != direction) {
             direction = dir;
             _moveTime = 1 / SPEED;
@@ -66,7 +65,7 @@ public class Tank {
         if (_moveTime > 0)
             return;
         _moveTime = 1 / SPEED;
-        if (maze.CheckMove(x, y, dir)) {
+        if (Maze.GetInstance().CheckMove(x, y, dir)) {
             switch (dir) {
                 case UP -> y -= 1;
                 case DOWN -> y += 1;
@@ -83,11 +82,16 @@ public class Tank {
         _fireTime -= deltaTime;
     }
 
-    public void Shoot(ArrayList<Bullet> bullets) {
+    public void Shoot() {
         if (_fireTime > 0)
             return;
         System.out.println("Fire");
         _fireTime = 1 / FIRE_RATE;
-        bullets.add(new Bullet(x, y, direction));
+        BulletManager.GetInstance().CreateBullet(x, y, direction, TankManager.GetInstance().GetIndex(this));
+    }
+
+    public void Hit() {
+        System.out.println("Hit");
+        TankManager.GetInstance().SpawnRandom(this);
     }
 }
