@@ -9,7 +9,6 @@ import java.util.Stack;
 
 public class Maze {
     public final ArrayList<Cell> cells = new ArrayList<>();
-    private int width = 32, height = 16;
 
     private static Maze _instance = null;
 
@@ -25,12 +24,10 @@ public class Maze {
     private Maze() {
     }
 
-    public void Generate(int width, int height, int seed) {
+    public void Generate(int seed) {
         cells.clear();
-        this.width = width;
-        this.height = height;
-        for (int i = 0; i < width * height; i++) {
-            cells.add(new Cell(i % width, i / width));
+        for (int i = 0; i < Setting.MAZE_WIDTH * Setting.MAZE_HEIGHT; i++) {
+            cells.add(new Cell(i % Setting.MAZE_WIDTH, i / Setting.MAZE_WIDTH));
         }
         Random random = new Random(seed);
         GenerateMaze(random);
@@ -38,9 +35,7 @@ public class Maze {
 
     public void Draw(Graphics g) {
         g.setColor(Color.WHITE);
-        g.fillRect(0, 0, width * GamePanel.MAZE_UNIT, height * GamePanel.MAZE_UNIT);
-        if (width == 0 || height == 0)
-            return;
+        g.fillRect(0, 0, Setting.MAZE_WIDTH * Setting.MAZE_UNIT, Setting.MAZE_HEIGHT * Setting.MAZE_UNIT);
         for (Cell cell : cells) {
             cell.Draw(g);
         }
@@ -68,17 +63,18 @@ public class Maze {
 
     private Cell GetUnvisitedNeighbor(Cell cell, Queue<Cell> visited, Random random) {
         ArrayList<Cell> neighbors = new ArrayList<>();
-        if (cell.x > 0 && !visited.contains(cells.get(cell.y * width + cell.x - 1)))
-            neighbors.add(cells.get(cell.y * width + cell.x - 1));
+        if (cell.x > 0 && !visited.contains(cells.get(cell.y * Setting.MAZE_WIDTH + cell.x - 1)))
+            neighbors.add(cells.get(cell.y * Setting.MAZE_WIDTH + cell.x - 1));
 
-        if (cell.x < width - 1 && !visited.contains(cells.get(cell.y * width + cell.x + 1)))
-            neighbors.add(cells.get(cell.y * width + cell.x + 1));
+        if (cell.x < Setting.MAZE_WIDTH - 1 && !visited.contains(cells.get(cell.y * Setting.MAZE_WIDTH + cell.x + 1)))
+            neighbors.add(cells.get(cell.y * Setting.MAZE_WIDTH + cell.x + 1));
 
-        if (cell.y > 0 && !visited.contains(cells.get((cell.y - 1) * width + cell.x)))
-            neighbors.add(cells.get((cell.y - 1) * width + cell.x));
+        if (cell.y > 0 && !visited.contains(cells.get((cell.y - 1) * Setting.MAZE_WIDTH + cell.x)))
+            neighbors.add(cells.get((cell.y - 1) * Setting.MAZE_WIDTH + cell.x));
 
-        if (cell.y < height - 1 && !visited.contains(cells.get((cell.y + 1) * width + cell.x)))
-            neighbors.add(cells.get((cell.y + 1) * width + cell.x));
+        if (cell.y < Setting.MAZE_HEIGHT - 1
+                && !visited.contains(cells.get((cell.y + 1) * Setting.MAZE_WIDTH + cell.x)))
+            neighbors.add(cells.get((cell.y + 1) * Setting.MAZE_WIDTH + cell.x));
 
         if (neighbors.isEmpty())
             return null;
@@ -106,16 +102,16 @@ public class Maze {
     public boolean CheckMove(int x, int y, Direction dir) {
         switch (dir) {
             case UP -> {
-                return !cells.get(y * this.width + x).walls[0];
+                return !cells.get(y * Setting.MAZE_WIDTH + x).walls[0];
             }
             case DOWN -> {
-                return !cells.get(y * this.width + x).walls[1];
+                return !cells.get(y * Setting.MAZE_WIDTH + x).walls[1];
             }
             case LEFT -> {
-                return !cells.get(y * this.width + x).walls[2];
+                return !cells.get(y * Setting.MAZE_WIDTH + x).walls[2];
             }
             case RIGHT -> {
-                return !cells.get(y * this.width + x).walls[3];
+                return !cells.get(y * Setting.MAZE_WIDTH + x).walls[3];
             }
             default -> {
             }

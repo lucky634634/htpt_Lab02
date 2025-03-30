@@ -22,12 +22,19 @@ public class TankManager {
 
     public Tank AddTank(Tank tank) {
         tanks.add(tank);
+        tank.Init(0, 0);
         return tank;
     }
 
     public Tank CreateTank(int x, int y, Image image) {
         Tank tank = new Tank(image);
-        tank.SetPosition(x, y);
+        tank.Init(x, y);
+        tanks.add(tank);
+        return tank;
+    }
+
+    public Tank CreateTank(Image image) {
+        Tank tank = new Tank(image);
         tanks.add(tank);
         return tank;
     }
@@ -75,8 +82,8 @@ public class TankManager {
         boolean found = false;
         tank.SetPosition(-1, -1);
         do {
-            int x = (int) (Math.random() * GamePanel.MAZE_WIDTH);
-            int y = (int) (Math.random() * GamePanel.MAZE_HEIGHT);
+            int x = (int) (Math.random() * Setting.MAZE_WIDTH);
+            int y = (int) (Math.random() * Setting.MAZE_HEIGHT);
             if (GetTankByPosition(x, y) != null) {
                 continue;
             }

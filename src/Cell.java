@@ -17,9 +17,9 @@ public class Cell {
 
     public void Draw(Graphics g) {
         g.setColor(_color);
-        int halfUnit = GamePanel.MAZE_UNIT / 2;
-        int centerX = x * GamePanel.MAZE_UNIT + GamePanel.MAZE_UNIT / 2;
-        int centerY = y * GamePanel.MAZE_UNIT + GamePanel.MAZE_UNIT / 2;
+        int halfUnit = Setting.MAZE_UNIT / 2;
+        int centerX = x * Setting.MAZE_UNIT + Setting.MAZE_UNIT / 2;
+        int centerY = y * Setting.MAZE_UNIT + Setting.MAZE_UNIT / 2;
         if (walls[0])
             g.drawLine(centerX - halfUnit, centerY - halfUnit, centerX + halfUnit, centerY - halfUnit);
         if (walls[1])

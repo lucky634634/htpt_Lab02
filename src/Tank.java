@@ -13,10 +13,6 @@ public class Tank {
     public Color color = Color.RED;
 
     private Image _image = null;
-    private static final int MAZE_UNIT = GamePanel.MAZE_UNIT;
-
-    public static final float SPEED = 2f;
-    public static final float FIRE_RATE = SPEED;
 
     private float _moveTime = 0;
     private float _fireTime = 0;
@@ -34,8 +30,8 @@ public class Tank {
 
     public void Draw(Graphics g) {
         g.setColor(color);
-        int centerX = x * GamePanel.MAZE_UNIT + GamePanel.MAZE_UNIT / 2;
-        int centerY = y * GamePanel.MAZE_UNIT + GamePanel.MAZE_UNIT / 2;
+        int centerX = x * Setting.MAZE_UNIT + Setting.MAZE_UNIT / 2;
+        int centerY = y * Setting.MAZE_UNIT + Setting.MAZE_UNIT / 2;
         Graphics2D g2d = (Graphics2D) g;
 
         AffineTransform originalTransform = g2d.getTransform();
@@ -47,7 +43,7 @@ public class Tank {
             case NONE -> {
             }
         }
-        g2d.drawImage(_image, x * MAZE_UNIT, y * MAZE_UNIT, MAZE_UNIT, MAZE_UNIT, null);
+        g2d.drawImage(_image, x * Setting.MAZE_UNIT, y * Setting.MAZE_UNIT, Setting.MAZE_UNIT, Setting.MAZE_UNIT, null);
         g2d.setTransform(originalTransform);
     }
 
@@ -59,12 +55,12 @@ public class Tank {
     public void Move(Direction dir) {
         if (dir != Direction.NONE && dir != direction) {
             direction = dir;
-            _moveTime = 1 / SPEED;
+            _moveTime = 1 / Setting.TANK_SPEED;
             return;
         }
         if (_moveTime > 0)
             return;
-        _moveTime = 1 / SPEED;
+        _moveTime = 1 / Setting.TANK_SPEED;
         if (Maze.GetInstance().CheckMove(x, y, dir)) {
             switch (dir) {
                 case UP -> y -= 1;
@@ -86,12 +82,16 @@ public class Tank {
         if (_fireTime > 0)
             return;
         System.out.println("Fire");
-        _fireTime = 1 / FIRE_RATE;
+        _fireTime = 1 / Setting.TANK_FIRE_RATE;
         BulletManager.GetInstance().CreateBullet(x, y, direction, TankManager.GetInstance().GetIndex(this));
     }
 
     public void Hit() {
         System.out.println("Hit");
+        TankManager.GetInstance().SpawnRandom(this);
+    }
+
+    public void SpawnRandom() {
         TankManager.GetInstance().SpawnRandom(this);
     }
 }

@@ -17,7 +17,7 @@ public class GameFrame extends JFrame {
         add(_gamePanel, BorderLayout.CENTER);
 
         JPanel bottomPanel = new JPanel();
-        bottomPanel.setPreferredSize(new Dimension(GamePanel.MAZE_WIDTH * GamePanel.MAZE_UNIT, 200));
+        bottomPanel.setPreferredSize(new Dimension(Setting.MAZE_WIDTH * Setting.MAZE_UNIT, 200));
         bottomPanel.setLayout(new GridLayout(1, 2));
         bottomPanel.add(_consolePanel);
         bottomPanel.add(_scorePanel);
