@@ -1,5 +1,6 @@
 
 import java.awt.Graphics;
+import java.awt.Image;
 import java.util.ArrayList;
 
 public class TankManager {
@@ -19,8 +20,16 @@ public class TankManager {
         return _instance;
     }
 
-    public void AddTank(Tank tank) {
+    public Tank AddTank(Tank tank) {
         tanks.add(tank);
+        return tank;
+    }
+
+    public Tank CreateTank(int x, int y, Image image) {
+        Tank tank = new Tank(image);
+        tank.SetPosition(x, y);
+        tanks.add(tank);
+        return tank;
     }
 
     public Tank GetTank(int index) {
@@ -45,5 +54,34 @@ public class TankManager {
         for (Tank tank : tanks) {
             tank.Draw(g);
         }
+    }
+
+    public Tank GetTankByPosition(int x, int y) {
+        for (Tank tank : tanks) {
+            if (tank.x == x && tank.y == y) {
+                return tank;
+            }
+        }
+        return null;
+    }
+
+    public int GetIndex(Tank tank) {
+        if (tank == null)
+            return -1;
+        return tanks.indexOf(tank);
+    }
+
+    public void SpawnRandom(Tank tank) {
+        boolean found = false;
+        tank.SetPosition(-1, -1);
+        do {
+            int x = (int) (Math.random() * GamePanel.MAZE_WIDTH);
+            int y = (int) (Math.random() * GamePanel.MAZE_HEIGHT);
+            if (GetTankByPosition(x, y) != null) {
+                continue;
+            }
+            found = true;
+            tank.SetPosition(x, y);
+        } while (!found);
     }
 }

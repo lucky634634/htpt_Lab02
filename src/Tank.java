@@ -21,8 +21,6 @@ public class Tank {
     private float _moveTime = 0;
     private float _fireTime = 0;
 
-    // public ;
-
     public Tank(Image image) {
         this._image = image;
     }
@@ -89,6 +87,11 @@ public class Tank {
             return;
         System.out.println("Fire");
         _fireTime = 1 / FIRE_RATE;
-        BulletManager.GetInstance().CreateBullet(x, y, direction);
+        BulletManager.GetInstance().CreateBullet(x, y, direction, TankManager.GetInstance().GetIndex(this));
+    }
+
+    public void Hit() {
+        System.out.println("Hit");
+        TankManager.GetInstance().SpawnRandom(this);
     }
 }

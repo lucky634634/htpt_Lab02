@@ -23,10 +23,10 @@ public class BulletManager {
         bullets.clear();
     }
 
-    public void CreateBullet(int x, int y, Direction direction) {
+    public void CreateBullet(int x, int y, Direction direction, int tankId) {
         if (direction == Direction.NONE)
             return;
-        bullets.add(new Bullet(x, y, direction));
+        bullets.add(new Bullet(x, y, direction, tankId));
     }
 
     public void Update(float deltaTime) {

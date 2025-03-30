@@ -31,8 +31,17 @@ public class GamePanel extends JPanel implements Runnable {
         _isRunning = true;
         Maze.GetInstance().Generate(MAZE_WIDTH, MAZE_HEIGHT, 0);
         TankManager.GetInstance().Clear();
-        TankManager.GetInstance().AddTank(new Tank(new ImageIcon("assets/tank1.png").getImage()));
-        TankManager.GetInstance().GetTank(0).SetPosition(_random.nextInt(MAZE_WIDTH), _random.nextInt(MAZE_HEIGHT));
+        TankManager.GetInstance().CreateTank(_random.nextInt(MAZE_WIDTH), _random.nextInt(MAZE_HEIGHT),
+                new ImageIcon("assets/tank1.png").getImage());
+        TankManager.GetInstance().CreateTank(_random.nextInt(MAZE_WIDTH), _random.nextInt(MAZE_HEIGHT),
+                new ImageIcon("assets/tank1.png").getImage());
+        TankManager.GetInstance().CreateTank(_random.nextInt(MAZE_WIDTH), _random.nextInt(MAZE_HEIGHT),
+                new ImageIcon("assets/tank1.png").getImage());
+        TankManager.GetInstance().CreateTank(_random.nextInt(MAZE_WIDTH), _random.nextInt(MAZE_HEIGHT),
+                new ImageIcon("assets/tank1.png").getImage());
+        TankManager.GetInstance().CreateTank(_random.nextInt(MAZE_WIDTH), _random.nextInt(MAZE_HEIGHT),
+                new ImageIcon("assets/tank1.png").getImage());
+
         BulletManager.GetInstance().Clear();
     }
 
