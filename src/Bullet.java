@@ -8,8 +8,6 @@ public class Bullet {
     public int tankId = 0;
 
     private final Color _color = Color.RED;
-    private final int SIZE = GamePanel.MAZE_UNIT / 4;
-    private final float SPEED = Tank.SPEED * 4;
 
     private float _moveTime = 0;
 
@@ -24,7 +22,7 @@ public class Bullet {
         _moveTime -= _deltaTime;
         if (_moveTime > 0)
             return;
-        _moveTime = 1 / SPEED;
+        _moveTime = 1 / Setting.BULLET_SPEED;
         if (!Maze.GetInstance().CheckMove(x, y, direction)) {
             direction = Direction.NONE;
             return;
@@ -49,8 +47,9 @@ public class Bullet {
 
     public void Draw(Graphics g) {
         g.setColor(_color);
-        int centerX = x * GamePanel.MAZE_UNIT + GamePanel.MAZE_UNIT / 2;
-        int centerY = y * GamePanel.MAZE_UNIT + GamePanel.MAZE_UNIT / 2;
-        g.fillOval(centerX - SIZE / 2, centerY - SIZE / 2, SIZE, SIZE);
+        int centerX = x * Setting.MAZE_UNIT + Setting.MAZE_UNIT / 2;
+        int centerY = y * Setting.MAZE_UNIT + Setting.MAZE_UNIT / 2;
+        g.fillOval(centerX - Setting.BULLET_SIZE / 2, centerY - Setting.BULLET_SIZE / 2, Setting.BULLET_SIZE,
+                Setting.BULLET_SIZE);
     }
 }

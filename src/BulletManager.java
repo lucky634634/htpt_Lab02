@@ -33,8 +33,8 @@ public class BulletManager {
         for (Bullet bullet : bullets) {
             bullet.Update(deltaTime);
         }
-        bullets.removeIf(bullet -> bullet.x < 0 || bullet.x >= GamePanel.MAZE_WIDTH || bullet.y < 0
-                || bullet.y >= GamePanel.MAZE_HEIGHT || bullet.direction == Direction.NONE);
+        bullets.removeIf(bullet -> bullet.x < 0 || bullet.x >= Setting.MAZE_WIDTH || bullet.y < 0
+                || bullet.y >= Setting.MAZE_HEIGHT || bullet.direction == Direction.NONE);
     }
 
     public void Draw(Graphics g) {

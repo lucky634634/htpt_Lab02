@@ -7,11 +7,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 public class GamePanel extends JPanel implements Runnable {
-    public static final int MAZE_WIDTH = 32;
-    public static final int MAZE_HEIGHT = 16;
-    public static final int MAZE_UNIT = 32;
-
-    private static final int FPS = 60;
     private float _deltaTime = 0;
     private boolean _isRunning = false;
 
@@ -20,7 +15,8 @@ public class GamePanel extends JPanel implements Runnable {
     private final Random _random = new Random();
 
     public GamePanel() {
-        setPreferredSize(new Dimension(MAZE_WIDTH * MAZE_UNIT, MAZE_HEIGHT * MAZE_UNIT));
+        setPreferredSize(
+                new Dimension(Setting.MAZE_WIDTH * Setting.MAZE_UNIT, Setting.MAZE_HEIGHT * Setting.MAZE_UNIT));
         setBackground(Color.BLACK);
         setFocusable(true);
         addKeyListener(_gameInput);
@@ -29,18 +25,12 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void Setup() {
         _isRunning = true;
-        Maze.GetInstance().Generate(MAZE_WIDTH, MAZE_HEIGHT, 0);
+        Maze.GetInstance().Generate(0);
         TankManager.GetInstance().Clear();
-        TankManager.GetInstance().CreateTank(_random.nextInt(MAZE_WIDTH), _random.nextInt(MAZE_HEIGHT),
-                new ImageIcon("assets/tank1.png").getImage());
-        TankManager.GetInstance().CreateTank(_random.nextInt(MAZE_WIDTH), _random.nextInt(MAZE_HEIGHT),
-                new ImageIcon("assets/tank1.png").getImage());
-        TankManager.GetInstance().CreateTank(_random.nextInt(MAZE_WIDTH), _random.nextInt(MAZE_HEIGHT),
-                new ImageIcon("assets/tank1.png").getImage());
-        TankManager.GetInstance().CreateTank(_random.nextInt(MAZE_WIDTH), _random.nextInt(MAZE_HEIGHT),
-                new ImageIcon("assets/tank1.png").getImage());
-        TankManager.GetInstance().CreateTank(_random.nextInt(MAZE_WIDTH), _random.nextInt(MAZE_HEIGHT),
-                new ImageIcon("assets/tank1.png").getImage());
+        TankManager.GetInstance().CreateTank(new ImageIcon("assets/tank1.png").getImage()).SpawnRandom();
+        TankManager.GetInstance().CreateTank(new ImageIcon("assets/tank1.png").getImage()).SpawnRandom();
+        TankManager.GetInstance().CreateTank(new ImageIcon("assets/tank1.png").getImage()).SpawnRandom();
+        TankManager.GetInstance().CreateTank(new ImageIcon("assets/tank1.png").getImage()).SpawnRandom();
 
         BulletManager.GetInstance().Clear();
     }
@@ -94,7 +84,7 @@ public class GamePanel extends JPanel implements Runnable {
                 Update();
                 repaint();
                 long elapsedTime = System.currentTimeMillis() - lastTime;
-                long sleepTime = (long) (1000.0f / FPS) - elapsedTime;
+                long sleepTime = (Setting.TARGET_DELTA_TIME) - elapsedTime;
                 if (sleepTime > 0)
                     Thread.sleep(sleepTime);
             } catch (Exception e) {
