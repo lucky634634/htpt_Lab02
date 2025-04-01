@@ -43,6 +43,7 @@ public class Bullet {
         }
         direction = Direction.NONE;
         tank.Hit();
+        LogHandler.GetInstance().Log("Bullet hit tank " + tank.name);
     }
 
     public void Draw(Graphics g) {

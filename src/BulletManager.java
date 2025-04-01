@@ -38,6 +38,8 @@ public class BulletManager {
     }
 
     public void Draw(Graphics g) {
+        if (bullets.isEmpty())
+            return;
         for (Bullet bullet : bullets) {
             bullet.Draw(g);
         }

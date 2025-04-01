@@ -22,4 +22,6 @@ public class Setting {
     public static final int KEY_RIGHT = KeyEvent.VK_RIGHT;
     public static final int KEY_FIRE = KeyEvent.VK_SPACE;
     public static final int KEY_QUIT = KeyEvent.VK_ESCAPE;
+
+    public static final String LOG_FILE = "log/log.txt";
 }

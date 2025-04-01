@@ -11,14 +11,16 @@ public class Tank {
 
     public Direction direction = Direction.UP; // U D L R
     public Color color = Color.RED;
+    public String name = "";
 
     private Image _image = null;
 
     private float _moveTime = 0;
     private float _fireTime = 0;
 
-    public Tank(Image image) {
+    public Tank(Image image, String name) {
         this._image = image;
+        this.name = name;
     }
 
     public void Init(int x, int y) {
@@ -45,6 +47,9 @@ public class Tank {
         }
         g2d.drawImage(_image, x * Setting.MAZE_UNIT, y * Setting.MAZE_UNIT, Setting.MAZE_UNIT, Setting.MAZE_UNIT, null);
         g2d.setTransform(originalTransform);
+
+        g.setColor(Color.BLACK);
+        g.drawString(name, centerX, centerY + 25);
     }
 
     public void SetPosition(int x, int y) {

@@ -26,15 +26,15 @@ public class TankManager {
         return tank;
     }
 
-    public Tank CreateTank(int x, int y, Image image) {
-        Tank tank = new Tank(image);
+    public Tank CreateTank(int x, int y, Image image, String name) {
+        Tank tank = new Tank(image, name);
         tank.Init(x, y);
         tanks.add(tank);
         return tank;
     }
 
-    public Tank CreateTank(Image image) {
-        Tank tank = new Tank(image);
+    public Tank CreateTank(Image image, String name) {
+        Tank tank = new Tank(image, name);
         tanks.add(tank);
         return tank;
     }
@@ -58,6 +58,8 @@ public class TankManager {
     }
 
     public void Draw(Graphics g) {
+        if (tanks.isEmpty())
+            return;
         for (Tank tank : tanks) {
             tank.Draw(g);
         }
