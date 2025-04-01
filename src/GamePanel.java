@@ -27,12 +27,14 @@ public class GamePanel extends JPanel {
         _isRunning = true;
         Maze.GetInstance().Generate(0);
         TankManager.GetInstance().Clear();
-        TankManager.GetInstance().CreateTank(new ImageIcon("assets/tank1.png").getImage()).SpawnRandom();
-        TankManager.GetInstance().CreateTank(new ImageIcon("assets/tank1.png").getImage()).SpawnRandom();
-        TankManager.GetInstance().CreateTank(new ImageIcon("assets/tank1.png").getImage()).SpawnRandom();
-        TankManager.GetInstance().CreateTank(new ImageIcon("assets/tank1.png").getImage()).SpawnRandom();
+        TankManager.GetInstance().CreateTank(new ImageIcon("assets/tank1.png").getImage(), "Player").SpawnRandom();
+        TankManager.GetInstance().CreateTank(new ImageIcon("assets/tank2.png").getImage(), "Enemy").SpawnRandom();
+        TankManager.GetInstance().CreateTank(new ImageIcon("assets/tank2.png").getImage(), "Enemy").SpawnRandom();
+        TankManager.GetInstance().CreateTank(new ImageIcon("assets/tank2.png").getImage(), "Enemy").SpawnRandom();
 
         BulletManager.GetInstance().Clear();
+
+        LogHandler.GetInstance().Log("Start Game");
     }
 
     public void Run() {
@@ -50,8 +52,7 @@ public class GamePanel extends JPanel {
                 long sleepTime = (Setting.TARGET_DELTA_TIME) - elapsedTime;
                 if (sleepTime > 0)
                     Thread.sleep(sleepTime);
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (InterruptedException e) {
             }
         }
     }

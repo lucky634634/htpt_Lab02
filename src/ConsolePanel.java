@@ -7,7 +7,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-public class ConsolePanel extends JPanel {
+public class ConsolePanel extends JPanel implements LogListener {
     private final JTextArea _consoleText = new JTextArea();
 
     public ConsolePanel() {
@@ -22,12 +22,14 @@ public class ConsolePanel extends JPanel {
         _consoleText.setEditable(false);
         _consoleText.setEnabled(false);
         _consoleText.setDisabledTextColor(Color.BLACK);
+        LogHandler.GetInstance().AddListener(this);
     }
 
     public void Init() {
         _consoleText.setText("");
     }
 
+    @Override
     public void Log(String message) {
         LocalTime localTime = LocalTime.now();
         _consoleText.append("[" + localTime.toString() + "] " + message + "\n");
