@@ -1,4 +1,5 @@
 #!/bin/bash
 
-cd build
-java -jar App.jar
+java -jar build/App.jar
+
+pause

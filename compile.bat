@@ -2,6 +2,7 @@
 
 mkdir build
 mkdir bin
+mkdir log
 
 echo Main-Class: App > build/manifest.MF
 
