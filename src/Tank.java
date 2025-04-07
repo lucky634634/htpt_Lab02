@@ -12,15 +12,17 @@ public class Tank {
     public Direction direction = Direction.UP; // U D L R
     public Color color = Color.RED;
     public String name = "";
+    public int id = 0;
 
     private Image _image = null;
 
     private float _moveTime = 0;
     private float _fireTime = 0;
 
-    public Tank(Image image, String name) {
+    public Tank(int id, Image image, String name) {
         this._image = image;
         this.name = name;
+        this.id = id;
     }
 
     public void Init(int x, int y) {
@@ -88,7 +90,13 @@ public class Tank {
             return;
         System.out.println("Fire");
         _fireTime = 1 / Setting.TANK_FIRE_RATE;
-        BulletManager.GetInstance().CreateBullet(x, y, direction, TankManager.GetInstance().GetIndex(this));
+        BulletManager.GetInstance().CreateBullet(x, y, direction, id);
+    }
+
+    public void SetState(int x, int y, Direction dir) {
+        this.x = x;
+        this.y = y;
+        this.direction = dir;
     }
 
     public void Hit() {

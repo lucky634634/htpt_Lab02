@@ -2,13 +2,19 @@
 import java.awt.Graphics;
 import java.awt.Image;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class TankManager {
     public ArrayList<Tank> tanks = new ArrayList<>();
 
     private static TankManager _instance = null;
+    private int _tankId = 0;
+
+    private final Queue<Integer> _freeTankIds = new LinkedList<>();
 
     private TankManager() {
+        _tankId = 0;
     }
 
     public static TankManager GetInstance() {
@@ -20,21 +26,15 @@ public class TankManager {
         return _instance;
     }
 
-    public Tank AddTank(Tank tank) {
-        tanks.add(tank);
-        tank.Init(0, 0);
-        return tank;
-    }
-
     public Tank CreateTank(int x, int y, Image image, String name) {
-        Tank tank = new Tank(image, name);
+        Tank tank = CreateTank(image, name);
         tank.Init(x, y);
-        tanks.add(tank);
         return tank;
     }
 
     public Tank CreateTank(Image image, String name) {
-        Tank tank = new Tank(image, name);
+        Tank tank = new Tank(_tankId, image, name);
+        _tankId++;
         tanks.add(tank);
         return tank;
     }
@@ -45,9 +45,12 @@ public class TankManager {
 
     public void RemoveTank(Tank tank) {
         tanks.remove(tank);
+        _freeTankIds.add(_tankId);
     }
 
     public void Clear() {
+        _tankId = 0;
+        _freeTankIds.clear();
         tanks.clear();
     }
 

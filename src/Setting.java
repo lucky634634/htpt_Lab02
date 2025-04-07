@@ -24,4 +24,7 @@ public class Setting {
     public static final int KEY_QUIT = KeyEvent.VK_ESCAPE;
 
     public static final String LOG_FILE = "log/log.txt";
+
+    public static final String TANK_IMAGE = "assets/tank1.png";
+    public static final String ENEMY_IMAGE = "assets/tank2.png";
 }

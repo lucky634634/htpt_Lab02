@@ -38,7 +38,7 @@ public class Bullet {
         Tank tank = TankManager.GetInstance().GetTankByPosition(x, y);
         if (tank == null)
             return;
-        if (tankId == TankManager.GetInstance().GetIndex(tank)) {
+        if (tankId == tank.id) {
             return;
         }
         direction = Direction.NONE;
