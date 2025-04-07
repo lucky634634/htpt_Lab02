@@ -1,5 +1,8 @@
 
+import java.awt.Image;
 import java.awt.event.KeyEvent;
+
+import javax.swing.ImageIcon;
 
 public class Setting {
     public static final int MAZE_WIDTH = 32;
@@ -25,6 +28,9 @@ public class Setting {
 
     public static final String LOG_FILE = "log/log.txt";
 
-    public static final String TANK_IMAGE = "assets/tank1.png";
-    public static final String ENEMY_IMAGE = "assets/tank2.png";
+    public static final String TANK_ASSET = "assets/tank1.png";
+    public static final String ENEMY_ASSET = "assets/tank2.png";
+
+    public static final Image TANK_IMAGE = new ImageIcon(Setting.TANK_IMAGE).getImage();
+    public static final Image ENEMY_IMAGE = new ImageIcon(Setting.ENEMY_IMAGE).getImage();
 }

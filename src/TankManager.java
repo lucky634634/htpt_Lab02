@@ -33,8 +33,14 @@ public class TankManager {
     }
 
     public Tank CreateTank(Image image, String name) {
-        Tank tank = new Tank(_tankId, image, name);
-        _tankId++;
+        int id = 0;
+        if (_freeTankIds.isEmpty()) {
+            id = _tankId;
+            _tankId++;
+        } else {
+            id = _freeTankIds.poll();
+        }
+        Tank tank = new Tank(id, image, name);
         tanks.add(tank);
         return tank;
     }

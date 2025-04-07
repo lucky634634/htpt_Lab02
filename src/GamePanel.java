@@ -2,7 +2,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
-import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 public class GamePanel extends JPanel {
@@ -29,10 +28,10 @@ public class GamePanel extends JPanel {
         Maze.GetInstance().Generate(0);
         TankManager.GetInstance().Clear();
         BulletManager.GetInstance().Clear();
-        TankManager.GetInstance().CreateTank(new ImageIcon(Setting.TANK_IMAGE).getImage(), "Player").SpawnRandom();
-        TankManager.GetInstance().CreateTank(new ImageIcon(Setting.ENEMY_IMAGE).getImage(), "Enemy").SpawnRandom();
-        TankManager.GetInstance().CreateTank(new ImageIcon(Setting.ENEMY_IMAGE).getImage(), "Enemy").SpawnRandom();
-        TankManager.GetInstance().CreateTank(new ImageIcon(Setting.ENEMY_IMAGE).getImage(), "Enemy").SpawnRandom();
+        TankManager.GetInstance().CreateTank(Setting.TANK_IMAGE, "Player").SpawnRandom();
+        TankManager.GetInstance().CreateTank(Setting.ENEMY_IMAGE, "Enemy").SpawnRandom();
+        TankManager.GetInstance().CreateTank(Setting.ENEMY_IMAGE, "Enemy").SpawnRandom();
+        TankManager.GetInstance().CreateTank(Setting.ENEMY_IMAGE, "Enemy").SpawnRandom();
 
         LogHandler.GetInstance().Log("Start Game");
     }
