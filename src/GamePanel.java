@@ -2,8 +2,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
-import java.util.Random;
-import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 public class GamePanel extends JPanel {
@@ -11,8 +9,6 @@ public class GamePanel extends JPanel {
     private boolean _isRunning = false;
 
     private final static GameInput _gameInput = new GameInput();
-
-    private final Random _random = new Random();
 
     public GamePanel() {
         setPreferredSize(
@@ -24,15 +20,18 @@ public class GamePanel extends JPanel {
     }
 
     public void Setup() {
+        Setup(0);
+    }
+
+    public void Setup(int seed) {
         _isRunning = true;
         Maze.GetInstance().Generate(0);
         TankManager.GetInstance().Clear();
-        TankManager.GetInstance().CreateTank(new ImageIcon("assets/tank1.png").getImage(), "Player").SpawnRandom();
-        TankManager.GetInstance().CreateTank(new ImageIcon("assets/tank2.png").getImage(), "Enemy").SpawnRandom();
-        TankManager.GetInstance().CreateTank(new ImageIcon("assets/tank2.png").getImage(), "Enemy").SpawnRandom();
-        TankManager.GetInstance().CreateTank(new ImageIcon("assets/tank2.png").getImage(), "Enemy").SpawnRandom();
-
         BulletManager.GetInstance().Clear();
+        TankManager.GetInstance().CreateTank(Setting.TANK_IMAGE, "Player").SpawnRandom();
+        TankManager.GetInstance().CreateTank(Setting.ENEMY_IMAGE, "Enemy").SpawnRandom();
+        TankManager.GetInstance().CreateTank(Setting.ENEMY_IMAGE, "Enemy").SpawnRandom();
+        TankManager.GetInstance().CreateTank(Setting.ENEMY_IMAGE, "Enemy").SpawnRandom();
 
         LogHandler.GetInstance().Log("Start Game");
     }
@@ -71,7 +70,6 @@ public class GamePanel extends JPanel {
         } else if (_gameInput.GetKey(KeyEvent.VK_RIGHT)) {
             TankManager.GetInstance().GetTank(0).Move(Direction.RIGHT);
         }
-
         TankManager.GetInstance().Update(_deltaTime);
         BulletManager.GetInstance().Update(_deltaTime);
     }
