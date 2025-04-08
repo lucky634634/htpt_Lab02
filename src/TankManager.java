@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 public class TankManager {
     public ArrayList<Tank> tanks = new ArrayList<>();
-
     private static TankManager _instance = null;
 
     private Runnable onChangeCallback; // Callback to notify changes
@@ -99,15 +98,15 @@ public class TankManager {
     public void HandleInput(int port, String input)
     {
         if (input.equals("shoot")) {
-            TankManager.GetInstance().GetTank(port - Server.PORT).Shoot();
+            TankManager.GetInstance().GetTank(Server.connectedPort.indexOf(port) + 1).Shoot();
         } else if (input.equals("up")) {
-            TankManager.GetInstance().GetTank(port - Server.PORT).Move(Direction.UP);
+            TankManager.GetInstance().GetTank(Server.connectedPort.indexOf(port) + 1).Move(Direction.UP);
         } else if (input.equals("down")) {
-            TankManager.GetInstance().GetTank(port - Server.PORT).Move(Direction.DOWN);
+            TankManager.GetInstance().GetTank(Server.connectedPort.indexOf(port) + 1).Move(Direction.DOWN);
         } else if (input.equals("left")) {
-            TankManager.GetInstance().GetTank(port - Server.PORT).Move(Direction.LEFT);
+            TankManager.GetInstance().GetTank(Server.connectedPort.indexOf(port) + 1).Move(Direction.LEFT);
         } else if (input.equals("right")) {
-            TankManager.GetInstance().GetTank(port - Server.PORT).Move(Direction.RIGHT);
+            TankManager.GetInstance().GetTank(Server.connectedPort.indexOf(port) + 1).Move(Direction.RIGHT);
         }
         notifyChange();
     }

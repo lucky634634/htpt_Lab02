@@ -7,9 +7,10 @@ import java.net.Socket;
 public class Client {
     private boolean _isRunning = false;
     public int port ;
+    public int id;
     public Client(int port){
         this.port = port;
-        sendMessage(new Message("hello", port, 3030, 0, null, null, null));
+        sendMessage(new Message("hello", port, 3030, 0, 0, null, null, null));
         System.out.println("Client started on port " + port);
         try (ServerSocket serverSocket = new ServerSocket(port)) {
             while (true) {
@@ -42,8 +43,9 @@ public class Client {
                 if(!_isRunning)
                 {
                     _isRunning = true;
+                    this.id = message.id;
                     Maze.GetInstance().Generate(message.seed);
-                    TankManager.GetInstance().tanks = Transform.toTankList(message.tanks, port);
+                    TankManager.GetInstance().tanks = Transform.toTankList(message.tanks, id);
                     BulletManager.GetInstance().bullets = Transform.toBulletList(message.bullets);
                     GameFrame gameFrame = new GameFrame();
                     gameFrame.Run("client", port);
@@ -51,7 +53,7 @@ public class Client {
                 }
                 else
                 {
-                TankManager.GetInstance().tanks = Transform.toTankList(message.tanks, port);
+                TankManager.GetInstance().tanks = Transform.toTankList(message.tanks, id);
                 BulletManager.GetInstance().bullets = Transform.toBulletList(message.bullets);
                 return;
                 }

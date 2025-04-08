@@ -23,18 +23,17 @@ public class Transform implements Serializable {
         return transforms;
         }
     
-    public static ArrayList<Tank> toTankList(ArrayList<Transform> transforms, int port) {
+    public static ArrayList<Tank> toTankList(ArrayList<Transform> transforms, int id) {
         ArrayList<Tank> tanks = new ArrayList<>();
         Tank tank = null;
         for (int i = 0; i < transforms.size(); i++) {
-            if(i == 0){
+            if(i == 0)
             tank = new Tank(new ImageIcon("assets/tank1.png").getImage(), "Host");
-            }
-            else if (i == port - Server.PORT) {
-                tank = new Tank(new ImageIcon("assets/tank1.png").getImage(), "Player");
-            } else {
+            else if (i == id + 1)
+                {System.out.println("ID: " + id);
+                tank = new Tank(new ImageIcon("assets/tank1.png").getImage(), "Player");}
+            else
                 tank = new Tank(new ImageIcon("assets/tank2.png").getImage(), "Enemy");
-            }
             Transform transform = transforms.get(i);
             tank.x = transform.x;
             tank.y = transform.y;

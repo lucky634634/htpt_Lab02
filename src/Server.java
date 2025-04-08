@@ -8,7 +8,7 @@ import java.net.Socket;
 public class Server {
     public static int PORT = 3030;
     public static final String STOP_STRING = "exit";
-    private static ArrayList<Integer> connectedPort = new ArrayList<Integer>();
+    public static ArrayList<Integer> connectedPort = new ArrayList<Integer>();
 
     public Server() {
         TankManager.GetInstance().setOnChangeCallback(this::BroadcastUpdate);
@@ -49,7 +49,7 @@ public class Server {
         ArrayList<Transform> tanks = Transform.fromTankList(TankManager.GetInstance().tanks);
         ArrayList<Transform> bullets = Transform.fromBulletList(BulletManager.GetInstance().bullets);
         for (int port : connectedPort) {
-            Message message = new Message("update", Server.PORT, port, 0, tanks, bullets, null);
+            Message message = new Message("update", Server.PORT, port, connectedPort.indexOf(port), 0, tanks, bullets, null);
             SendMessage(message, port);
         }
     }

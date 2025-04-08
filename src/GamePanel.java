@@ -29,8 +29,7 @@ public class GamePanel extends JPanel {
             TankManager.GetInstance().Clear();
             BulletManager.GetInstance().Clear();
             TankManager.GetInstance().CreateTank(new ImageIcon("assets/tank1.png").getImage(), "Host").SpawnRandom();
-
-        LogHandler.GetInstance().Log("Start Game");
+            LogHandler.GetInstance().Log("Start Game");
         }
     }
 
@@ -65,18 +64,18 @@ public class GamePanel extends JPanel {
     }
 
     private void Update(int port) throws IOException {
-        Message message = new Message(null, 0, 0, 0, null, null, null);
+        Message message = new Message(null, 0, 0, 0, 0, null, null, null);
         if (_gameInput.GetKey(KeyEvent.VK_SPACE)) {
-            message = new Message("input", port, Server.PORT, 0, null, null, "shoot");
+            message = new Message("input", port, Server.PORT, 0, 0, null, null, "shoot");
         }
         if (_gameInput.GetKey(KeyEvent.VK_UP)) {
-            message = new Message("input", port, Server.PORT, 0, null, null, "up");
+            message = new Message("input", port, Server.PORT, 0, 0, null, null, "up");
         } else if (_gameInput.GetKey(KeyEvent.VK_DOWN)) {
-            message = new Message("input", port, Server.PORT, 0, null, null, "down");
+            message = new Message("input", port, Server.PORT, 0, 0, null, null, "down");
         } else if (_gameInput.GetKey(KeyEvent.VK_LEFT)) {
-            message = new Message("input", port, Server.PORT, 0, null, null, "left");
+            message = new Message("input", port, Server.PORT, 0, 0, null, null, "left");
         } else if (_gameInput.GetKey(KeyEvent.VK_RIGHT)) {
-            message = new Message("input", port, Server.PORT, 0, null, null, "right");
+            message = new Message("input", port, Server.PORT, 0, 0, null, null, "right");
         }
         if(message.type == null) {
             return;
