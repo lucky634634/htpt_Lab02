@@ -5,6 +5,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Client {
+    private boolean _isRunning = false;
     public int port ;
     public Client(int port){
         this.port = port;
@@ -37,18 +38,23 @@ public class Client {
         try (ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()))) {
             Message message = (Message) ois.readObject();
             System.out.println("Client: " + message.type + " from server " + message.fromPort);
-            if (message.type.equals("init")) {
-                Maze.GetInstance().Generate(message.seed);
+            if (message.type.equals("update")) {
+                if(!_isRunning)
+                {
+                    _isRunning = true;
+                    Maze.GetInstance().Generate(message.seed);
+                    TankManager.GetInstance().tanks = Transform.toTankList(message.tanks, port);
+                    BulletManager.GetInstance().bullets = Transform.toBulletList(message.bullets);
+                    GameFrame gameFrame = new GameFrame();
+                    gameFrame.Run("client", port);
+                    return;
+                }
+                else
+                {
                 TankManager.GetInstance().tanks = Transform.toTankList(message.tanks, port);
                 BulletManager.GetInstance().bullets = Transform.toBulletList(message.bullets);
-                GameFrame gameFrame = new GameFrame();
-                gameFrame.Run("client", port);
                 return;
-            }
-            if(message.type.equals("update")) {
-                TankManager.GetInstance().tanks = Transform.toTankList(message.tanks, port);
-                BulletManager.GetInstance().bullets = Transform.toBulletList(message.bullets);
-                return;
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

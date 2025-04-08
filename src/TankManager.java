@@ -8,6 +8,8 @@ public class TankManager {
 
     private static TankManager _instance = null;
 
+    private Runnable onChangeCallback; // Callback to notify changes
+
     private TankManager() {
     }
 
@@ -95,20 +97,30 @@ public class TankManager {
     }
 
     public void HandleInput(int port, String input)
-{
-    if (input.equals("shoot")) {
-        TankManager.GetInstance().GetTank(port - Server.PORT).Shoot();
-    } else if (input.equals("up")) {
-        TankManager.GetInstance().GetTank(port - Server.PORT).Move(Direction.UP);
-    } else if (input.equals("down")) {
-        TankManager.GetInstance().GetTank(port - Server.PORT).Move(Direction.DOWN);
-    } else if (input.equals("left")) {
-        TankManager.GetInstance().GetTank(port - Server.PORT).Move(Direction.LEFT);
-    } else if (input.equals("right")) {
-        TankManager.GetInstance().GetTank(port - Server.PORT).Move(Direction.RIGHT);
+    {
+        if (input.equals("shoot")) {
+            TankManager.GetInstance().GetTank(port - Server.PORT).Shoot();
+        } else if (input.equals("up")) {
+            TankManager.GetInstance().GetTank(port - Server.PORT).Move(Direction.UP);
+        } else if (input.equals("down")) {
+            TankManager.GetInstance().GetTank(port - Server.PORT).Move(Direction.DOWN);
+        } else if (input.equals("left")) {
+            TankManager.GetInstance().GetTank(port - Server.PORT).Move(Direction.LEFT);
+        } else if (input.equals("right")) {
+            TankManager.GetInstance().GetTank(port - Server.PORT).Move(Direction.RIGHT);
+        }
+        notifyChange();
+    }
+    
+    private void notifyChange() {
+        if (onChangeCallback != null) {
+            onChangeCallback.run();
+        }
     }
 
-}
+        public void setOnChangeCallback(Runnable callback) {
+        this.onChangeCallback = callback;
+    }
 }
 
 

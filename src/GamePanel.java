@@ -49,6 +49,11 @@ public class GamePanel extends JPanel {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+                else
+                {
+                    TankManager.GetInstance().Update(_deltaTime);
+                    BulletManager.GetInstance().Update(_deltaTime);
+                }
                 repaint();
                 long elapsedTime = System.currentTimeMillis() - lastTime;
                 long sleepTime = (Setting.TARGET_DELTA_TIME) - elapsedTime;

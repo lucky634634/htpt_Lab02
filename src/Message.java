@@ -11,13 +11,13 @@ public class Message implements Serializable {
     public ArrayList<Transform> bullets;
     public String input;
 
-    public Message(String type, int fromPort, int toPort, int seed, ArrayList<Transform> tanks, ArrayList<Transform> bullets, String input) {
+    public Message(String type, int fromPort, int toPort, int seed, ArrayList<Transform> tanks2, ArrayList<Transform> bullets2, String input) {
         this.type = type;
         this.fromPort = fromPort;
         this.toPort = toPort;
         this.seed = seed;
-        this.tanks = tanks;
-        this.bullets = bullets;
+        this.tanks = tanks2;
+        this.bullets = bullets2;
         this.input = input;
     }
 }

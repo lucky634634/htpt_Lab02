@@ -7,6 +7,8 @@ public class BulletManager {
 
     private static BulletManager _instance = null;
 
+    private Runnable onChangeCallback; // Callback to notify changes
+
     private BulletManager() {
     }
 
@@ -27,14 +29,28 @@ public class BulletManager {
         if (direction == Direction.NONE)
             return;
         bullets.add(new Bullet(x, y, direction, tankId));
+        notifyChange();
     }
 
     public void Update(float deltaTime) {
         for (Bullet bullet : bullets) {
             bullet.Update(deltaTime);
         }
-        bullets.removeIf(bullet -> bullet.x < 0 || bullet.x >= Setting.MAZE_WIDTH || bullet.y < 0
+        boolean bulletsRemoved = bullets.removeIf(bullet -> bullet.x < 0 || bullet.x >= Setting.MAZE_WIDTH || bullet.y < 0
                 || bullet.y >= Setting.MAZE_HEIGHT || bullet.direction == Direction.NONE);
+        if(bulletsRemoved) {
+            notifyChange();
+        }
+    }
+
+    private void notifyChange() {
+        if (onChangeCallback != null) {
+            onChangeCallback.run();
+        }
+    }
+
+    public void setOnChangeCallback(Runnable callback) {
+        this.onChangeCallback = callback;
     }
 
     public void Draw(Graphics g) {
