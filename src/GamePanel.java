@@ -13,6 +13,8 @@ public class GamePanel extends JPanel {
     public float _deltaTime = 0;
     private boolean _isRunning = false;
 
+    private long lastMessageTime = 0;
+
     private final static GameInput _gameInput = new GameInput();
     public GamePanel() {
         setPreferredSize(new Dimension(Setting.MAZE_WIDTH * Setting.MAZE_UNIT, Setting.MAZE_HEIGHT * Setting.MAZE_UNIT));
@@ -29,8 +31,8 @@ public class GamePanel extends JPanel {
             TankManager.GetInstance().Clear();
             BulletManager.GetInstance().Clear();
             TankManager.GetInstance().CreateTank(new ImageIcon("assets/tank1.png").getImage(), "Host").SpawnRandom();
-            LogHandler.GetInstance().Log("Start Game");
         }
+        LogHandler.GetInstance().Log("Start Game");
     }
 
     public void Run(String role, int port) {
@@ -48,11 +50,8 @@ public class GamePanel extends JPanel {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                else
-                {
-                    TankManager.GetInstance().Update(_deltaTime);
-                    BulletManager.GetInstance().Update(_deltaTime);
-                }
+                TankManager.GetInstance().Update(_deltaTime);
+                BulletManager.GetInstance().Update(_deltaTime);
                 repaint();
                 long elapsedTime = System.currentTimeMillis() - lastTime;
                 long sleepTime = (Setting.TARGET_DELTA_TIME) - elapsedTime;
@@ -64,6 +63,10 @@ public class GamePanel extends JPanel {
     }
 
     private void Update(int port) throws IOException {
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - lastMessageTime < 100) {
+            return;
+        }
         Message message = new Message(null, 0, 0, 0, 0, null, null, null);
         if (_gameInput.GetKey(KeyEvent.VK_SPACE)) {
             message = new Message("input", port, Server.PORT, 0, 0, null, null, "shoot");
@@ -88,6 +91,7 @@ public class GamePanel extends JPanel {
                 oos.flush();
                 oos.close();
                 socket.close();
+                lastMessageTime = currentTime;
                 return;
             } catch (Exception e) {
                 e.printStackTrace();

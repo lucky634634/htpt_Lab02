@@ -30,10 +30,10 @@ public class Transform implements Serializable {
             if(i == 0)
             tank = new Tank(new ImageIcon("assets/tank1.png").getImage(), "Host");
             else if (i == id + 1)
-                {System.out.println("ID: " + id);
-                tank = new Tank(new ImageIcon("assets/tank1.png").getImage(), "Player");}
+                {
+                tank = new Tank(new ImageIcon("assets/tank1.png").getImage(), "Player " + i);}
             else
-                tank = new Tank(new ImageIcon("assets/tank2.png").getImage(), "Enemy");
+                tank = new Tank(new ImageIcon("assets/tank2.png").getImage(), "Player " + i);
             Transform transform = transforms.get(i);
             tank.x = transform.x;
             tank.y = transform.y;

@@ -13,6 +13,7 @@ public class Server {
     public Server() {
         TankManager.GetInstance().setOnChangeCallback(this::BroadcastUpdate);
         BulletManager.GetInstance().setOnChangeCallback(this::BroadcastUpdate);
+        
         new Thread(() ->
         {
         GameFrame gameFrame = new GameFrame();
@@ -50,7 +51,7 @@ public class Server {
         ArrayList<Transform> bullets = Transform.fromBulletList(BulletManager.GetInstance().bullets);
         for (int port : connectedPort) {
             Message message = new Message("update", Server.PORT, port, connectedPort.indexOf(port), 0, tanks, bullets, null);
-            SendMessage(message, port);
+            SendMessage(message, message.toPort);
         }
     }
 
@@ -60,7 +61,7 @@ public class Server {
             System.out.println("Server: " + message.type + " from client " + message.fromPort);
             if (message.type.equals("hello")) {
                 connectedPort.add(message.fromPort);
-                TankManager.GetInstance().CreateTank(new ImageIcon("assets/tank1.png").getImage(), "Player").SpawnRandom();
+                TankManager.GetInstance().CreateTank(new ImageIcon("assets/tank1.png").getImage(), "Player " + (connectedPort.indexOf(message.fromPort) + 1)).SpawnRandom();
                 BroadcastUpdate();
                 return;
             }

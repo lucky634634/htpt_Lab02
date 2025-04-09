@@ -32,6 +32,7 @@ public class ScorePanel extends JPanel {
     }
 
     public void Update(ScoreObject[] scores) {
+
     }
 
 }
