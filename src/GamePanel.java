@@ -50,8 +50,11 @@ public class GamePanel extends JPanel {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                TankManager.GetInstance().Update(_deltaTime);
-                BulletManager.GetInstance().Update(_deltaTime);
+                else
+                {
+                    TankManager.GetInstance().Update(_deltaTime);
+                    BulletManager.GetInstance().Update(_deltaTime);
+                }
                 repaint();
                 long elapsedTime = System.currentTimeMillis() - lastTime;
                 long sleepTime = (Setting.TARGET_DELTA_TIME) - elapsedTime;
@@ -64,7 +67,7 @@ public class GamePanel extends JPanel {
 
     private void Update(int port) throws IOException {
         long currentTime = System.currentTimeMillis();
-        if (currentTime - lastMessageTime < 100) {
+        if (currentTime - lastMessageTime < 200) {
             return;
         }
         Message message = new Message(null, 0, 0, 0, 0, null, null, null);
