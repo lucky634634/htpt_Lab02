@@ -58,7 +58,7 @@ public class Maze {
                 current = stack.pop();
             }
         } while (!stack.isEmpty());
-
+        RemoveAdditionalWalls(random);
     }
 
     private Cell GetUnvisitedNeighbor(Cell cell, Queue<Cell> visited, Random random) {
@@ -96,6 +96,49 @@ public class Maze {
         } else if (y == -1) {
             a.walls[0] = false;
             b.walls[1] = false;
+        }
+    }
+
+    private void RemoveAdditionalWalls(Random random) {
+        for (Cell cell : cells) {
+            if (cell.x == 0 || cell.x == Setting.MAZE_WIDTH - 1 || cell.y == 0 || cell.y == Setting.MAZE_HEIGHT - 1) {
+                continue;
+            }
+            if(cells.indexOf(cell) % 2 == 0) {
+                continue;
+            }
+            for (int i = 0; i < 4; i++) {
+                if (cell.walls[i] && random.nextBoolean()) {
+                    // Remove the wall and the corresponding wall in the neighboring cell
+                    Cell neighbor = getNeighbor(cell, i);
+                    if (neighbor != null) {
+                        cell.walls[i] = false;
+                        int oppositeWall = -1;
+                        switch (i) {
+                            case 0 -> oppositeWall = 1;
+                            case 1 -> oppositeWall = 0;
+                            case 2 -> oppositeWall = 3;
+                            case 3 -> oppositeWall = 2;
+                        }
+                        neighbor.walls[oppositeWall] = false;
+                    }
+                }
+            }
+        }
+    }
+
+    private Cell getNeighbor(Cell cell, int wallIndex) {
+        switch (wallIndex) {
+            case 0: // UP
+                return cells.get((cell.y - 1) * Setting.MAZE_WIDTH + cell.x);
+            case 1: // DOWN
+                return cells.get((cell.y + 1) * Setting.MAZE_WIDTH + cell.x);
+            case 2: // LEFT
+                return cells.get(cell.y * Setting.MAZE_WIDTH + cell.x - 1);
+            case 3: // RIGHT
+                return cells.get(cell.y * Setting.MAZE_WIDTH + cell.x + 1);
+            default:
+                return null;
         }
     }
 
