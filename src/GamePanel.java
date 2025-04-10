@@ -9,14 +9,16 @@ public class GamePanel extends JPanel {
     private boolean _isRunning = false;
 
     private final static GameInput _gameInput = new GameInput();
+    private String _playerType = "Server"; // Server, Client
 
-    public GamePanel() {
+    public GamePanel(String playerType) {
         setPreferredSize(
                 new Dimension(Setting.MAZE_WIDTH * Setting.MAZE_UNIT, Setting.MAZE_HEIGHT * Setting.MAZE_UNIT));
         setBackground(Color.BLACK);
         setFocusable(true);
         addKeyListener(_gameInput);
         _isRunning = false;
+        _playerType = playerType;
     }
 
     public void Setup() {

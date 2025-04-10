@@ -6,11 +6,11 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public class GameFrame extends JFrame {
-    private final GamePanel _gamePanel = new GamePanel();
+    private GamePanel _gamePanel;
     private final ConsolePanel _consolePanel = new ConsolePanel();
     private final ScorePanel _scorePanel = new ScorePanel();
 
-    public GameFrame() {
+    public GameFrame(String playerType) {
         // add(new GamePanel());
         // pack();
         setLayout(new BorderLayout());
@@ -29,6 +29,7 @@ public class GameFrame extends JFrame {
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
+        _gamePanel = new GamePanel(playerType);
     }
 
     public void Run() {

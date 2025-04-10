@@ -1,5 +1,7 @@
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -27,6 +29,36 @@ public class ServerSelectPanel extends JPanel {
         portPanel.add(portLabel);
         portPanel.add(_portField);
         add(new JLabel(""));
+
+        _startButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (_nameField.getText().isEmpty() || _portField.getText().isEmpty()
+                        || !CheckNumber(_portField.getText()))
+                    return;
+
+                System.out.println(
+                        "Starting server with name: " + _nameField.getText() + " and port: "
+                                + ConvertStringToInt(_portField.getText()));
+            }
+        });
         add(_startButton);
+    }
+
+    private boolean CheckNumber(String str) {
+        try {
+            Integer.parseInt(str);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    private int ConvertStringToInt(String str) {
+        if (CheckNumber(str)) {
+            return Integer.parseInt(str);
+        } else {
+            throw new IllegalArgumentException("Invalid input: " + str);
+        }
     }
 }

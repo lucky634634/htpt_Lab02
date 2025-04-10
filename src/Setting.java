@@ -33,4 +33,5 @@ public class Setting {
 
     public static final Image TANK_IMAGE = new ImageIcon(Setting.TANK_IMAGE).getImage();
     public static final Image ENEMY_IMAGE = new ImageIcon(Setting.ENEMY_IMAGE).getImage();
+
 }

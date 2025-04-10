@@ -1,5 +1,7 @@
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -7,7 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 public class ClientSelectPanel extends JPanel {
-    private JTextField _serverAddrField = new JTextField(20);
+    private JTextField _serverAddrField = new JTextField("localhost", 20);
     private JTextField _serverPortField = new JTextField("5000", 20);
     private JTextField _clientNameField = new JTextField(20);
     private JButton _connectButton = new JButton("Connect");
@@ -32,8 +34,38 @@ public class ClientSelectPanel extends JPanel {
         JLabel clientName = new JLabel("Name:                   ", JLabel.LEFT);
         clientPanel.add(clientName);
         clientPanel.add(_clientNameField);
+        _connectButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (_serverAddrField.getText().isEmpty() || _serverPortField.getText().isEmpty()
+                        || _clientNameField.getText().isEmpty() || !CheckNumber(_serverPortField.getText()))
+                    return;
 
+                String serverAddr = _serverAddrField.getText();
+                int serverPort = ConvertStringToInt(_serverPortField.getText());
+                String name = _clientNameField.getText();
+                System.out.println("Connecting to server at: " + serverAddr + ":" + serverPort + " with name: " + name);
+
+            }
+        });
         add(_connectButton);
 
+    }
+
+    private boolean CheckNumber(String str) {
+        try {
+            Integer.parseInt(str);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    private int ConvertStringToInt(String str) {
+        if (CheckNumber(str)) {
+            return Integer.parseInt(str);
+        } else {
+            throw new IllegalArgumentException("Invalid input: " + str);
+        }
     }
 }
