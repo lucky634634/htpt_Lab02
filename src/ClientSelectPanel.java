@@ -46,6 +46,9 @@ public class ClientSelectPanel extends JPanel {
                 String name = _clientNameField.getText();
                 System.out.println("Connecting to server at: " + serverAddr + ":" + serverPort + " with name: " + name);
 
+                Thread t = new Thread(new GameFrame(false));
+                t.start();
+                setVisible(false);
             }
         });
         add(_connectButton);

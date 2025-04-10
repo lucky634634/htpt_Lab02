@@ -40,6 +40,10 @@ public class ServerSelectPanel extends JPanel {
                 System.out.println(
                         "Starting server with name: " + _nameField.getText() + " and port: "
                                 + ConvertStringToInt(_portField.getText()));
+
+                Thread t = new Thread(new GameFrame(true));
+                t.start();
+                setVisible(false);
             }
         });
         add(_startButton);

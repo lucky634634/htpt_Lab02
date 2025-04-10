@@ -9,16 +9,17 @@ public class GamePanel extends JPanel {
     private boolean _isRunning = false;
 
     private final static GameInput _gameInput = new GameInput();
-    private String _playerType = "Server"; // Server, Client
+    private boolean _isHost = false; // Server, Client
 
-    public GamePanel(String playerType) {
+    public GamePanel(boolean isHost) {
         setPreferredSize(
                 new Dimension(Setting.MAZE_WIDTH * Setting.MAZE_UNIT, Setting.MAZE_HEIGHT * Setting.MAZE_UNIT));
         setBackground(Color.BLACK);
         setFocusable(true);
         addKeyListener(_gameInput);
         _isRunning = false;
-        _playerType = playerType;
+        _isHost = isHost;
+        setBackground(Color.BLACK);
     }
 
     public void Setup() {
@@ -27,15 +28,20 @@ public class GamePanel extends JPanel {
 
     public void Setup(int seed) {
         _isRunning = true;
-        Maze.GetInstance().Generate(0);
-        TankManager.GetInstance().Clear();
-        BulletManager.GetInstance().Clear();
-        TankManager.GetInstance().CreateTank(Setting.TANK_IMAGE, "Player").SpawnRandom();
-        TankManager.GetInstance().CreateTank(Setting.ENEMY_IMAGE, "Enemy").SpawnRandom();
-        TankManager.GetInstance().CreateTank(Setting.ENEMY_IMAGE, "Enemy").SpawnRandom();
-        TankManager.GetInstance().CreateTank(Setting.ENEMY_IMAGE, "Enemy").SpawnRandom();
+        if (_isHost)
+            Maze.GetInstance().Generate(0);
+        // TankManager.GetInstance().Clear();
+        // BulletManager.GetInstance().Clear();
+        // TankManager.GetInstance().CreateTank(Setting.TANK_IMAGE,
+        // "Player").SpawnRandom();
+        // TankManager.GetInstance().CreateTank(Setting.ENEMY_IMAGE,
+        // "Enemy").SpawnRandom();
+        // TankManager.GetInstance().CreateTank(Setting.ENEMY_IMAGE,
+        // "Enemy").SpawnRandom();
+        // TankManager.GetInstance().CreateTank(Setting.ENEMY_IMAGE,
+        // "Enemy").SpawnRandom();
 
-        LogHandler.GetInstance().Log("Start Game");
+        // LogHandler.GetInstance().Log("Start Game");
     }
 
     public void Run() {
@@ -59,21 +65,23 @@ public class GamePanel extends JPanel {
     }
 
     private void Update() {
-        if (_gameInput.GetKey(KeyEvent.VK_SPACE)) {
-            TankManager.GetInstance().GetTank(0).Shoot();
-        }
+        // if (_gameInput.GetKey(KeyEvent.VK_SPACE)) {
+        // TankManager.GetInstance().GetTank(0).Shoot();
+        // }
 
-        if (_gameInput.GetKey(KeyEvent.VK_UP)) {
-            TankManager.GetInstance().GetTank(0).Move(Direction.UP);
-        } else if (_gameInput.GetKey(KeyEvent.VK_DOWN)) {
-            TankManager.GetInstance().GetTank(0).Move(Direction.DOWN);
-        } else if (_gameInput.GetKey(KeyEvent.VK_LEFT)) {
-            TankManager.GetInstance().GetTank(0).Move(Direction.LEFT);
-        } else if (_gameInput.GetKey(KeyEvent.VK_RIGHT)) {
-            TankManager.GetInstance().GetTank(0).Move(Direction.RIGHT);
+        // if (_gameInput.GetKey(KeyEvent.VK_UP)) {
+        // TankManager.GetInstance().GetTank(0).Move(Direction.UP);
+        // } else if (_gameInput.GetKey(KeyEvent.VK_DOWN)) {
+        // TankManager.GetInstance().GetTank(0).Move(Direction.DOWN);
+        // } else if (_gameInput.GetKey(KeyEvent.VK_LEFT)) {
+        // TankManager.GetInstance().GetTank(0).Move(Direction.LEFT);
+        // } else if (_gameInput.GetKey(KeyEvent.VK_RIGHT)) {
+        // TankManager.GetInstance().GetTank(0).Move(Direction.RIGHT);
+        // }
+        if (_isHost) {
+            TankManager.GetInstance().Update(_deltaTime);
+            BulletManager.GetInstance().Update(_deltaTime);
         }
-        TankManager.GetInstance().Update(_deltaTime);
-        BulletManager.GetInstance().Update(_deltaTime);
     }
 
     @Override
@@ -81,11 +89,10 @@ public class GamePanel extends JPanel {
         super.paintComponent(g);
         if (!_isRunning)
             return;
-
         Maze.GetInstance().Draw(g);
         TankManager.GetInstance().Draw(g);
         BulletManager.GetInstance().Draw(g);
-        g.setColor(Color.WHITE);
+        g.setColor(Color.BLACK);
         g.drawString("FPS: " + (int) (1f / _deltaTime), 10, 10);
 
     }

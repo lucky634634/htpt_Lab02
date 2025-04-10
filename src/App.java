@@ -1,6 +1,6 @@
 public class App {
     public static void main(String[] args) throws Exception {
-        // GameFrame frame = new GameFrame();
+        // GameFrame frame = new GameFrame(true);
         // frame.Run();
         new SelectForm();
     }

@@ -8,6 +8,8 @@ public class Setting {
     public static final int MAZE_WIDTH = 32;
     public static final int MAZE_HEIGHT = 16;
     public static final int MAZE_UNIT = 32;
+    public static final int GAME_SCREEN_WIDTH = MAZE_WIDTH * MAZE_UNIT;
+    public static final int GAME_SCREEN_HEIGHT = MAZE_HEIGHT * MAZE_UNIT;
 
     public static final int FPS = 60;
     public static final long TARGET_DELTA_TIME = (long) (1000f / FPS);
