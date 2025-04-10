@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -13,8 +14,10 @@ public class ClientSelectPanel extends JPanel {
     private JTextField _serverPortField = new JTextField("5000", 20);
     private JTextField _clientNameField = new JTextField(20);
     private JButton _connectButton = new JButton("Connect");
+    private JFrame _parent = null;
 
-    public ClientSelectPanel() {
+    public ClientSelectPanel(JFrame parent) {
+        _parent = parent;
         setLayout(new GridLayout(4, 1));
 
         JPanel serverAddrPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -48,7 +51,6 @@ public class ClientSelectPanel extends JPanel {
 
                 Thread t = new Thread(new GameFrame(false));
                 t.start();
-                setVisible(false);
             }
         });
         add(_connectButton);

@@ -16,7 +16,7 @@ public class Server {
     private Server() {
     }
 
-    public static Server get_instance() {
+    public static Server GetInstance() {
         if (_instance == null) {
             synchronized (Server.class) {
                 _instance = new Server();

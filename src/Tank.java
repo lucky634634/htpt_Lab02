@@ -5,6 +5,8 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.geom.AffineTransform;
 
+import javax.swing.ImageIcon;
+
 public class Tank {
     public int x = 0;
     public int y = 0;
@@ -18,9 +20,17 @@ public class Tank {
 
     private float _moveTime = 0;
     private float _fireTime = 0;
+    public TankType tankType = TankType.PLAYER;
 
-    public Tank(int id, Image image, String name) {
-        this._image = image;
+    public final Image TANK_IMAGE = new ImageIcon(Setting.TANK_ASSET).getImage();
+    public final Image ENEMY_IMAGE = new ImageIcon(Setting.ENEMY_ASSET).getImage();
+
+    public Tank() {
+        this.name = "";
+        this.id = 0;
+    }
+
+    public Tank(int id, String name) {
         this.name = name;
         this.id = id;
     }
@@ -47,6 +57,7 @@ public class Tank {
             case NONE -> {
             }
         }
+        _image = TankType.PLAYER == tankType ? TANK_IMAGE : ENEMY_IMAGE;
         g2d.drawImage(_image, x * Setting.MAZE_UNIT, y * Setting.MAZE_UNIT, Setting.MAZE_UNIT, Setting.MAZE_UNIT, null);
         g2d.setTransform(originalTransform);
 
@@ -102,9 +113,18 @@ public class Tank {
     public void Hit() {
         System.out.println("Hit");
         TankManager.GetInstance().SpawnRandom(this);
+        LogHandler.GetInstance().Log("Tank " + id + " was hit");
     }
 
     public void SpawnRandom() {
         TankManager.GetInstance().SpawnRandom(this);
+    }
+
+    public void SetState(int id, int x, int y, Direction dir, TankType type) {
+        this.x = x;
+        this.y = y;
+        this.direction = dir;
+        this.id = id;
+        this.tankType = type;
     }
 }

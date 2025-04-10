@@ -23,25 +23,13 @@ public class GamePanel extends JPanel {
     }
 
     public void Setup() {
-        Setup(0);
-    }
-
-    public void Setup(int seed) {
         _isRunning = true;
-        if (_isHost)
-            Maze.GetInstance().Generate(0);
-        // TankManager.GetInstance().Clear();
-        // BulletManager.GetInstance().Clear();
-        // TankManager.GetInstance().CreateTank(Setting.TANK_IMAGE,
-        // "Player").SpawnRandom();
-        // TankManager.GetInstance().CreateTank(Setting.ENEMY_IMAGE,
-        // "Enemy").SpawnRandom();
-        // TankManager.GetInstance().CreateTank(Setting.ENEMY_IMAGE,
-        // "Enemy").SpawnRandom();
-        // TankManager.GetInstance().CreateTank(Setting.ENEMY_IMAGE,
-        // "Enemy").SpawnRandom();
-
-        // LogHandler.GetInstance().Log("Start Game");
+        if (_isHost) {
+            Maze.GetInstance().Generate((int) (Math.random() * 10000));
+            int id = ScoreManager.GetInstance().id;
+            TankManager.GetInstance().CreateTank(id, ScoreManager.GetInstance().GetName(id)).SpawnRandom();
+            ;
+        }
     }
 
     public void Run() {
@@ -92,8 +80,8 @@ public class GamePanel extends JPanel {
         Maze.GetInstance().Draw(g);
         TankManager.GetInstance().Draw(g);
         BulletManager.GetInstance().Draw(g);
-        g.setColor(Color.BLACK);
-        g.drawString("FPS: " + (int) (1f / _deltaTime), 10, 10);
+        g.setColor(new Color(0, 0, 100));
+        g.drawString("FPS: " + (int) (1f / _deltaTime), 0, 20);
 
     }
 }

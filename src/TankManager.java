@@ -1,20 +1,13 @@
 
 import java.awt.Graphics;
-import java.awt.Image;
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
 
 public class TankManager {
     public ArrayList<Tank> tanks = new ArrayList<>();
 
     private static TankManager _instance = null;
-    private int _tankId = 0;
-
-    private final Queue<Integer> _freeTankIds = new LinkedList<>();
 
     private TankManager() {
-        _tankId = 0;
     }
 
     public static TankManager GetInstance() {
@@ -26,37 +19,26 @@ public class TankManager {
         return _instance;
     }
 
-    public Tank CreateTank(int x, int y, Image image, String name) {
-        Tank tank = CreateTank(image, name);
-        tank.Init(x, y);
-        return tank;
-    }
-
-    public Tank CreateTank(Image image, String name) {
-        int id = 0;
-        if (_freeTankIds.isEmpty()) {
-            id = _tankId;
-            _tankId++;
-        } else {
-            id = _freeTankIds.poll();
-        }
-        Tank tank = new Tank(id, image, name);
+    public Tank CreateTank(int id, String name) {
+        Tank tank = new Tank(id, name);
         tanks.add(tank);
         return tank;
     }
 
-    public Tank GetTank(int index) {
-        return tanks.get(index);
+    public Tank GetTank(int id) {
+        for (Tank tank : tanks) {
+            if (tank.id == id) {
+                return tank;
+            }
+        }
+        return null;
     }
 
     public void RemoveTank(Tank tank) {
         tanks.remove(tank);
-        _freeTankIds.add(_tankId);
     }
 
     public void Clear() {
-        _tankId = 0;
-        _freeTankIds.clear();
         tanks.clear();
     }
 
@@ -101,5 +83,24 @@ public class TankManager {
             found = true;
             tank.SetPosition(x, y);
         } while (!found);
+    }
+
+    public void SetTankList(TankTransform[] ttl) {
+        if (ttl == null || ttl.length == 0)
+            return;
+        if (ttl.length > tanks.size()) {
+            for (int i = tanks.size(); i < ttl.length; i++) {
+                tanks.add(new Tank());
+            }
+        } else if (ttl.length < tanks.size()) {
+            for (int i = ttl.length; i < tanks.size(); i++) {
+                tanks.remove(tanks.size() - 1);
+            }
+        }
+
+        for (int i = 0; i < ttl.length; i++) {
+            TankType t = ScoreManager.GetInstance().id == ttl[i].id ? TankType.PLAYER : TankType.ENEMY;
+            tanks.get(i).SetState(ttl[i].id, ttl[i].x, ttl[i].y, ttl[i].direction, t);
+        }
     }
 }

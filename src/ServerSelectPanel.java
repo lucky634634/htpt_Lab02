@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -13,8 +14,10 @@ public class ServerSelectPanel extends JPanel {
     private final JTextField _nameField = new JTextField(20);
     private final JTextField _portField = new JTextField("5000", 20);
     private final JButton _startButton = new JButton("Start Server");
+    private JFrame _parent = null;
 
-    public ServerSelectPanel() {
+    public ServerSelectPanel(JFrame parent) {
+        _parent = parent;
         setLayout(new GridLayout(4, 1));
 
         JPanel namePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -41,9 +44,11 @@ public class ServerSelectPanel extends JPanel {
                         "Starting server with name: " + _nameField.getText() + " and port: "
                                 + ConvertStringToInt(_portField.getText()));
 
+                Server.GetInstance().Start(ConvertStringToInt(_portField.getText()));
+                ScoreManager.GetInstance().CreateNewPlayer(_nameField.getText());
                 Thread t = new Thread(new GameFrame(true));
                 t.start();
-                setVisible(false);
+                _parent.setVisible(false);
             }
         });
         add(_startButton);
