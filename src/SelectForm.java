@@ -3,8 +3,8 @@ import java.awt.GridLayout;
 import javax.swing.JFrame;
 
 public class SelectForm extends JFrame {
-    private final ServerSelectPanel _serverPanel = new ServerSelectPanel();
-    private final ClientSelectPanel _clientPanel = new ClientSelectPanel();
+    private final ServerSelectPanel _serverPanel = new ServerSelectPanel(this);
+    private final ClientSelectPanel _clientPanel = new ClientSelectPanel(this);
 
     public SelectForm() {
         super();

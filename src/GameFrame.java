@@ -5,15 +5,16 @@ import java.awt.GridLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-public class GameFrame extends JFrame {
-    private final GamePanel _gamePanel = new GamePanel();
+public class GameFrame extends JFrame implements Runnable {
+    private GamePanel _gamePanel;
     private final ConsolePanel _consolePanel = new ConsolePanel();
     private final ScorePanel _scorePanel = new ScorePanel();
 
-    public GameFrame() {
+    public GameFrame(boolean isHost) {
         // add(new GamePanel());
         // pack();
         setLayout(new BorderLayout());
+        _gamePanel = new GamePanel(isHost);
         add(_gamePanel, BorderLayout.CENTER);
 
         JPanel bottomPanel = new JPanel();
@@ -31,9 +32,9 @@ public class GameFrame extends JFrame {
         setResizable(false);
     }
 
-    public void Run() {
+    @Override
+    public void run() {
         _gamePanel.Setup();
-        _scorePanel.Init();
         _consolePanel.Init();
         _gamePanel.Run();
     }

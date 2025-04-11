@@ -9,6 +9,7 @@ import java.util.Stack;
 
 public class Maze {
     public final ArrayList<Cell> cells = new ArrayList<>();
+    public int seed = -1;
 
     private static Maze _instance = null;
 
@@ -25,6 +26,7 @@ public class Maze {
     }
 
     public void Generate(int seed) {
+        this.seed = seed;
         cells.clear();
         for (int i = 0; i < Setting.MAZE_WIDTH * Setting.MAZE_HEIGHT; i++) {
             cells.add(new Cell(i % Setting.MAZE_WIDTH, i / Setting.MAZE_WIDTH));
@@ -36,8 +38,10 @@ public class Maze {
     public void Draw(Graphics g) {
         g.setColor(Color.WHITE);
         g.fillRect(0, 0, Setting.MAZE_WIDTH * Setting.MAZE_UNIT, Setting.MAZE_HEIGHT * Setting.MAZE_UNIT);
-        for (Cell cell : cells) {
-            cell.Draw(g);
+        synchronized (cells) {
+            for (Cell cell : cells) {
+                cell.Draw(g);
+            }
         }
     }
 
@@ -117,5 +121,9 @@ public class Maze {
             }
         }
         return true;
+    }
+
+    public Cell GetCell(int x, int y) {
+        return cells.get(y * Setting.MAZE_WIDTH + x);
     }
 }

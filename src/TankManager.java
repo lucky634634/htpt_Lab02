@@ -1,72 +1,65 @@
 
 import java.awt.Graphics;
-import java.awt.Image;
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
 
 public class TankManager {
     public ArrayList<Tank> tanks = new ArrayList<>();
 
     private static TankManager _instance = null;
-    private int _tankId = 0;
-
-    private final Queue<Integer> _freeTankIds = new LinkedList<>();
 
     private TankManager() {
-        _tankId = 0;
     }
 
     public static TankManager GetInstance() {
         if (_instance == null) {
             synchronized (TankManager.class) {
-                _instance = new TankManager();
+                if (_instance == null)
+                    _instance = new TankManager();
             }
         }
         return _instance;
     }
 
-    public Tank CreateTank(int x, int y, Image image, String name) {
-        Tank tank = CreateTank(image, name);
-        tank.Init(x, y);
-        return tank;
-    }
-
-    public Tank CreateTank(Image image, String name) {
-        int id = 0;
-        if (_freeTankIds.isEmpty()) {
-            id = _tankId;
-            _tankId++;
-        } else {
-            id = _freeTankIds.poll();
-        }
-        Tank tank = new Tank(id, image, name);
+    public synchronized Tank CreateTank(int id, String name) {
+        Tank tank = new Tank(id, name);
+        tank.tankType = id == ScoreManager.GetInstance().id ? TankType.PLAYER : TankType.ENEMY;
         tanks.add(tank);
         return tank;
     }
 
-    public Tank GetTank(int index) {
-        return tanks.get(index);
+    public synchronized Tank GetTank(int id) {
+        for (Tank tank : tanks) {
+            if (tank.id == id) {
+                return tank;
+            }
+        }
+        return null;
     }
 
-    public void RemoveTank(Tank tank) {
+    public synchronized void RemoveTank(Tank tank) {
         tanks.remove(tank);
-        _freeTankIds.add(_tankId);
     }
 
-    public void Clear() {
-        _tankId = 0;
-        _freeTankIds.clear();
+    public synchronized void RemoveTank(int id) {
+        for (int i = 0; i < tanks.size(); i++) {
+            if (tanks.get(i).id == id) {
+                tanks.remove(i);
+                return;
+            }
+        }
+    }
+
+    public synchronized void Clear() {
         tanks.clear();
     }
 
-    public void Update(float deltaTime) {
+    public synchronized void Update(float deltaTime) {
         for (Tank tank : tanks) {
             tank.Update(deltaTime);
         }
     }
 
-    public void Draw(Graphics g) {
+    public synchronized void Draw(Graphics g) {
         if (tanks.isEmpty())
             return;
         for (Tank tank : tanks) {
@@ -74,7 +67,7 @@ public class TankManager {
         }
     }
 
-    public Tank GetTankByPosition(int x, int y) {
+    public synchronized Tank GetTankByPosition(int x, int y) {
         for (Tank tank : tanks) {
             if (tank.x == x && tank.y == y) {
                 return tank;
@@ -83,13 +76,13 @@ public class TankManager {
         return null;
     }
 
-    public int GetIndex(Tank tank) {
+    public synchronized int GetIndex(Tank tank) {
         if (tank == null)
             return -1;
         return tanks.indexOf(tank);
     }
 
-    public void SpawnRandom(Tank tank) {
+    public synchronized void SpawnRandom(Tank tank) {
         boolean found = false;
         tank.SetPosition(-1, -1);
         do {
@@ -101,5 +94,38 @@ public class TankManager {
             found = true;
             tank.SetPosition(x, y);
         } while (!found);
+
+        Cell c = Maze.GetInstance().GetCell(tank.x, tank.y);
+        if (!c.walls[0]) {
+            tank.direction = Direction.UP;
+        } else if (!c.walls[1]) {
+            tank.direction = Direction.DOWN;
+        } else if (!c.walls[2]) {
+            tank.direction = Direction.LEFT;
+        } else {
+            tank.direction = Direction.RIGHT;
+        }
+    }
+
+    public synchronized void SetTankList(Transform[] ttl) {
+        if (ttl == null || ttl.length == 0)
+            return;
+        tanks.clear();
+        for (Transform t : ttl) {
+            Tank tank = new Tank(t.id, ScoreManager.GetInstance().GetName(t.id));
+            tank.tankType = ScoreManager.GetInstance().id == t.id ? TankType.PLAYER : TankType.ENEMY;
+            tank.SetPosition(t.x, t.y);
+            tank.direction = t.direction;
+            tanks.add(tank);
+        }
+
+    }
+
+    public synchronized Transform[] GetTankList() {
+        Transform[] ttl = new Transform[tanks.size()];
+        for (int i = 0; i < tanks.size(); i++) {
+            ttl[i] = new Transform(tanks.get(i).id, tanks.get(i).x, tanks.get(i).y, tanks.get(i).direction);
+        }
+        return ttl;
     }
 }

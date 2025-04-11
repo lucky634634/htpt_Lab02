@@ -1,7 +1,6 @@
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.event.KeyEvent;
 import javax.swing.JPanel;
 
 public class GamePanel extends JPanel {
@@ -9,31 +8,26 @@ public class GamePanel extends JPanel {
     private boolean _isRunning = false;
 
     private final static GameInput _gameInput = new GameInput();
+    private boolean _isHost = false; // Server, Client
 
-    public GamePanel() {
+    public GamePanel(boolean isHost) {
         setPreferredSize(
                 new Dimension(Setting.MAZE_WIDTH * Setting.MAZE_UNIT, Setting.MAZE_HEIGHT * Setting.MAZE_UNIT));
         setBackground(Color.BLACK);
         setFocusable(true);
         addKeyListener(_gameInput);
         _isRunning = false;
+        _isHost = isHost;
+        setBackground(Color.BLACK);
     }
 
     public void Setup() {
-        Setup(0);
-    }
-
-    public void Setup(int seed) {
         _isRunning = true;
-        Maze.GetInstance().Generate(0);
-        TankManager.GetInstance().Clear();
-        BulletManager.GetInstance().Clear();
-        TankManager.GetInstance().CreateTank(Setting.TANK_IMAGE, "Player").SpawnRandom();
-        TankManager.GetInstance().CreateTank(Setting.ENEMY_IMAGE, "Enemy").SpawnRandom();
-        TankManager.GetInstance().CreateTank(Setting.ENEMY_IMAGE, "Enemy").SpawnRandom();
-        TankManager.GetInstance().CreateTank(Setting.ENEMY_IMAGE, "Enemy").SpawnRandom();
-
-        LogHandler.GetInstance().Log("Start Game");
+        if (_isHost) {
+            Maze.GetInstance().Generate((int) (Math.random() * 10000));
+            int id = 0;
+            TankManager.GetInstance().CreateTank(id, ScoreManager.GetInstance().GetName(id)).SpawnRandom();
+        }
     }
 
     public void Run() {
@@ -57,21 +51,46 @@ public class GamePanel extends JPanel {
     }
 
     private void Update() {
-        if (_gameInput.GetKey(KeyEvent.VK_SPACE)) {
-            TankManager.GetInstance().GetTank(0).Shoot();
-        }
+        if (_isHost) {
+            Direction dir = Direction.NONE;
+            boolean shoot = _gameInput.GetKey(Setting.KEY_FIRE);
+            if (_gameInput.GetKey(Setting.KEY_LEFT)) {
+                dir = Direction.LEFT;
+            } else if (_gameInput.GetKey(Setting.KEY_RIGHT)) {
+                dir = Direction.RIGHT;
+            } else if (_gameInput.GetKey(Setting.KEY_UP)) {
+                dir = Direction.UP;
+            } else if (_gameInput.GetKey(Setting.KEY_DOWN)) {
+                dir = Direction.DOWN;
+            }
 
-        if (_gameInput.GetKey(KeyEvent.VK_UP)) {
-            TankManager.GetInstance().GetTank(0).Move(Direction.UP);
-        } else if (_gameInput.GetKey(KeyEvent.VK_DOWN)) {
-            TankManager.GetInstance().GetTank(0).Move(Direction.DOWN);
-        } else if (_gameInput.GetKey(KeyEvent.VK_LEFT)) {
-            TankManager.GetInstance().GetTank(0).Move(Direction.LEFT);
-        } else if (_gameInput.GetKey(KeyEvent.VK_RIGHT)) {
-            TankManager.GetInstance().GetTank(0).Move(Direction.RIGHT);
+            if (dir != Direction.NONE || shoot) {
+                System.out.println("Updating tank 0");
+                InputQueue.GetInstance().Add(new Input(0, dir, shoot, false));
+            }
+            InputQueue.GetInstance().Resolve();
+            TankManager.GetInstance().Update(_deltaTime);
+            BulletManager.GetInstance().Update(_deltaTime);
+            Server.GetInstance()
+                    .SendAll(new ServerMessage(Maze.GetInstance().seed, TankManager.GetInstance().GetTankList(),
+                            BulletManager.GetInstance().GetBulletTransforms(), ScoreManager.GetInstance().GetScores()));
+        } else {
+            Direction dir = Direction.NONE;
+            boolean shoot = _gameInput.GetKey(Setting.KEY_FIRE);
+            if (_gameInput.GetKey(Setting.KEY_LEFT)) {
+                dir = Direction.LEFT;
+            } else if (_gameInput.GetKey(Setting.KEY_RIGHT)) {
+                dir = Direction.RIGHT;
+            } else if (_gameInput.GetKey(Setting.KEY_UP)) {
+                dir = Direction.UP;
+            } else if (_gameInput.GetKey(Setting.KEY_DOWN)) {
+                dir = Direction.DOWN;
+            }
+
+            if (dir != Direction.NONE || shoot) {
+                Client.GetInstance().SendMessage(new Input(ScoreManager.GetInstance().id, dir, shoot, false));
+            }
         }
-        TankManager.GetInstance().Update(_deltaTime);
-        BulletManager.GetInstance().Update(_deltaTime);
     }
 
     @Override
@@ -79,12 +98,11 @@ public class GamePanel extends JPanel {
         super.paintComponent(g);
         if (!_isRunning)
             return;
-
         Maze.GetInstance().Draw(g);
         TankManager.GetInstance().Draw(g);
         BulletManager.GetInstance().Draw(g);
-        g.setColor(Color.WHITE);
-        g.drawString("FPS: " + (int) (1f / _deltaTime), 10, 10);
+        g.setColor(new Color(0, 0, 100));
+        g.drawString("FPS: " + (int) (1f / _deltaTime), 0, 20);
 
     }
 }

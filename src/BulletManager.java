@@ -29,7 +29,7 @@ public class BulletManager {
         bullets.add(new Bullet(x, y, direction, tankId));
     }
 
-    public void Update(float deltaTime) {
+    public synchronized void Update(float deltaTime) {
         for (Bullet bullet : bullets) {
             bullet.Update(deltaTime);
         }
@@ -37,11 +37,27 @@ public class BulletManager {
                 || bullet.y >= Setting.MAZE_HEIGHT || bullet.direction == Direction.NONE);
     }
 
-    public void Draw(Graphics g) {
+    public synchronized void Draw(Graphics g) {
         if (bullets.isEmpty())
             return;
         for (Bullet bullet : bullets) {
             bullet.Draw(g);
+        }
+    }
+
+    public synchronized Transform[] GetBulletTransforms() {
+        Transform[] transforms = new Transform[bullets.size()];
+        for (int i = 0; i < bullets.size(); i++) {
+            Bullet b = bullets.get(i);
+            transforms[i] = new Transform(b.tankId, b.x, b.y, b.direction);
+        }
+        return transforms;
+    }
+
+    public synchronized void SetBulletList(Transform[] transforms) {
+        bullets.clear();
+        for (Transform t : transforms) {
+            bullets.add(new Bullet(t.x, t.y, t.direction, t.id));
         }
     }
 }

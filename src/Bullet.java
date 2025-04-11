@@ -16,6 +16,7 @@ public class Bullet {
         this.y = y;
         this.direction = direction;
         _moveTime = 0;
+        this.tankId = tankId;
     }
 
     public void Update(float _deltaTime) {
@@ -43,6 +44,7 @@ public class Bullet {
         }
         direction = Direction.NONE;
         tank.Hit();
+        ScoreManager.GetInstance().IncreaseScore(tankId, 11);
         LogHandler.GetInstance().Log("Bullet hit tank " + tank.name);
     }
 
