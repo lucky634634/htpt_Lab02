@@ -88,7 +88,6 @@ public class GamePanel extends JPanel {
             }
 
             if (dir != Direction.NONE || shoot) {
-                System.out.println("Updating tank 0");
                 Client.GetInstance().SendMessage(new Input(ScoreManager.GetInstance().id, dir, shoot, false));
             }
         }

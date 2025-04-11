@@ -14,7 +14,7 @@ public class Tank {
     public Direction direction = Direction.UP; // U D L R
     public Color color = Color.RED;
     public String name = "";
-    public int id = 0;
+    public int id = -1;
 
     private Image _image = null;
 
@@ -102,6 +102,7 @@ public class Tank {
             return;
         System.out.println("Fire");
         _fireTime = 1 / Setting.TANK_FIRE_RATE;
+        ScoreManager.GetInstance().IncreaseScore(id, -1);
         BulletManager.GetInstance().CreateBullet(x, y, direction, id);
     }
 
@@ -114,6 +115,7 @@ public class Tank {
     public void Hit() {
         System.out.println("Hit");
         TankManager.GetInstance().SpawnRandom(this);
+        ScoreManager.GetInstance().IncreaseScore(id, -5);
         LogHandler.GetInstance().Log("Tank " + id + " was hit");
     }
 

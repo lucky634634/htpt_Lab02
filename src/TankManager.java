@@ -22,7 +22,7 @@ public class TankManager {
 
     public synchronized Tank CreateTank(int id, String name) {
         Tank tank = new Tank(id, name);
-        tank.tankType = id == 0 ? TankType.PLAYER : TankType.ENEMY;
+        tank.tankType = id == ScoreManager.GetInstance().id ? TankType.PLAYER : TankType.ENEMY;
         tanks.add(tank);
         return tank;
     }
@@ -94,6 +94,17 @@ public class TankManager {
             found = true;
             tank.SetPosition(x, y);
         } while (!found);
+
+        Cell c = Maze.GetInstance().GetCell(tank.x, tank.y);
+        if (!c.walls[0]) {
+            tank.direction = Direction.UP;
+        } else if (!c.walls[1]) {
+            tank.direction = Direction.DOWN;
+        } else if (!c.walls[2]) {
+            tank.direction = Direction.LEFT;
+        } else {
+            tank.direction = Direction.RIGHT;
+        }
     }
 
     public synchronized void SetTankList(Transform[] ttl) {

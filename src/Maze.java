@@ -38,8 +38,10 @@ public class Maze {
     public void Draw(Graphics g) {
         g.setColor(Color.WHITE);
         g.fillRect(0, 0, Setting.MAZE_WIDTH * Setting.MAZE_UNIT, Setting.MAZE_HEIGHT * Setting.MAZE_UNIT);
-        for (Cell cell : cells) {
-            cell.Draw(g);
+        synchronized (cells) {
+            for (Cell cell : cells) {
+                cell.Draw(g);
+            }
         }
     }
 
@@ -119,5 +121,9 @@ public class Maze {
             }
         }
         return true;
+    }
+
+    public Cell GetCell(int x, int y) {
+        return cells.get(y * Setting.MAZE_WIDTH + x);
     }
 }

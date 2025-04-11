@@ -82,7 +82,7 @@ public class Client {
         }
 
         try {
-            System.out.println("Sending message: " + msg.toString());
+            // System.out.println("Sending message: " + msg.toString());
             ObjectOutputStream oos = new ObjectOutputStream(_socket.getOutputStream());
             oos.writeObject(msg);
             oos.flush();

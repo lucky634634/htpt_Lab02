@@ -91,11 +91,11 @@ public class ScoreManager {
         UpdateListener();
     }
 
-    private void UpdateListener() {
+    public void UpdateListener() {
         new Thread(() -> HandleListener()).start();
     }
 
-    private void HandleListener() {
+    private synchronized void HandleListener() {
         ScoreObject[] scores = new ScoreObject[_scores.size()];
         for (int i = 0; i < scores.length; i++) {
             scores[i] = _scores.get(i);
@@ -103,6 +103,16 @@ public class ScoreManager {
         for (ScoreListener listener : _scoreListeners) {
 
             listener.OnScoreChange(scores);
+        }
+    }
+
+    public synchronized void IncreaseScore(int id, int score) {
+        for (ScoreObject s : _scores) {
+            if (s.id == id) {
+                s.score += score;
+                UpdateListener();
+                return;
+            }
         }
     }
 }

@@ -4,8 +4,8 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Server {
@@ -15,7 +15,7 @@ public class Server {
     private AtomicBoolean _running = new AtomicBoolean(false);
     private ServerSocket _serverSocket = null;
     private final ArrayList<Thread> _clientThreads = new ArrayList<>();
-    private final Map<Integer, Socket> _clientSockets = new HashMap<>();
+    private final Map<Integer, Socket> _clientSockets = new ConcurrentHashMap<>();
 
     private Server() {
     }
@@ -69,9 +69,8 @@ public class Server {
     }
 
     private void HandleClient(Socket socket) {
-        int id = ScoreManager.GetInstance().CreateNewPlayer(null);
         String name = "";
-        _clientSockets.put(id, socket);
+        int id = -1;
         boolean running = true;
         while (_running.get() && running) {
             try {
@@ -80,15 +79,20 @@ public class Server {
                     Object obj = ois.readObject();
                     System.out.println("Received object from client: " + obj.toString());
                     if (obj instanceof RequestId) {
-                        System.out.println("Received request ID from client: " + ((RequestId) obj).name);
                         name = ((RequestId) obj).name;
-                        ScoreManager.GetInstance().SetName(id, ((RequestId) obj).name);
-                        TankManager.GetInstance().CreateTank(id, ((RequestId) obj).name).SpawnRandom();
+                        id = ScoreManager.GetInstance().CreateNewPlayer(name);
+                        _clientSockets.put(id, socket);
+                        // System.out.println("Received request ID from client: " + ((RequestId)
+                        // obj).name);
+                        TankManager.GetInstance().CreateTank(id, name).SpawnRandom();
+
                         SendMessage(new ResponseId(id), id);
-                        SendMessage(new ServerMessage(Maze.GetInstance().seed, TankManager.GetInstance().GetTankList(),
-                                BulletManager.GetInstance().GetBulletTransforms(),
-                                ScoreManager.GetInstance().GetScores()), id);
+                        // SendMessage(new ServerMessage(Maze.GetInstance().seed,
+                        // TankManager.GetInstance().GetTankList(),
+                        // BulletManager.GetInstance().GetBulletTransforms(),
+                        // ScoreManager.GetInstance().GetScores()), id);
                         LogHandler.GetInstance().Log("New player ID: " + id);
+                        ScoreManager.GetInstance().UpdateListener();
                     } else if (obj instanceof Input) {
                         InputQueue.GetInstance().Add((Input) obj);
                     } else {

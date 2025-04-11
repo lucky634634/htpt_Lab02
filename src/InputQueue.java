@@ -33,7 +33,6 @@ public class InputQueue {
         while (!buffer.isEmpty()) {
             Input input = buffer.poll();
             if (input != null) {
-                System.out.println("Processing input: " + input);
                 Tank t = TankManager.GetInstance().GetTank(input.id);
                 if (t != null) {
                     t.Move(input.dir);
