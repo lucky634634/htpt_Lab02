@@ -1,8 +1,4 @@
-
-import java.awt.Image;
 import java.awt.event.KeyEvent;
-
-import javax.swing.ImageIcon;
 
 public class Setting {
     public static final int MAZE_WIDTH = 32;

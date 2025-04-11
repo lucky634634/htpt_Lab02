@@ -19,13 +19,14 @@ public class ScoreManager {
     public static ScoreManager GetInstance() {
         if (_instance == null) {
             synchronized (ScoreManager.class) {
-                _instance = new ScoreManager();
+                if (_instance == null)
+                    _instance = new ScoreManager();
             }
         }
         return _instance;
     }
 
-    public int CreateNewPlayer(String name) {
+    public synchronized int CreateNewPlayer(String name) {
         if (_freeIds.isEmpty()) {
             int id = _currentId++;
             ScoreObject score = new ScoreObject(id, name, 0);
@@ -38,7 +39,7 @@ public class ScoreManager {
         return id;
     }
 
-    public void RemovePlayer(int id) {
+    public synchronized void RemovePlayer(int id) {
         if (_scores.isEmpty()) {
             return;
         }
@@ -47,13 +48,13 @@ public class ScoreManager {
         }
     }
 
-    public void UpdateList(ScoreObject[] scores) {
+    public synchronized void UpdateList(ScoreObject[] scores) {
         for (int i = 0; i < scores.length; i++) {
             scores[i] = _scores.get(i);
         }
     }
 
-    public String GetName(int id) {
+    public synchronized String GetName(int id) {
         for (ScoreObject score : _scores) {
             if (score.id == id) {
                 return score.name;

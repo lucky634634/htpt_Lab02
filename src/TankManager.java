@@ -13,19 +13,20 @@ public class TankManager {
     public static TankManager GetInstance() {
         if (_instance == null) {
             synchronized (TankManager.class) {
-                _instance = new TankManager();
+                if (_instance == null)
+                    _instance = new TankManager();
             }
         }
         return _instance;
     }
 
-    public Tank CreateTank(int id, String name) {
+    public synchronized Tank CreateTank(int id, String name) {
         Tank tank = new Tank(id, name);
         tanks.add(tank);
         return tank;
     }
 
-    public Tank GetTank(int id) {
+    public synchronized Tank GetTank(int id) {
         for (Tank tank : tanks) {
             if (tank.id == id) {
                 return tank;
@@ -34,21 +35,21 @@ public class TankManager {
         return null;
     }
 
-    public void RemoveTank(Tank tank) {
+    public synchronized void RemoveTank(Tank tank) {
         tanks.remove(tank);
     }
 
-    public void Clear() {
+    public synchronized void Clear() {
         tanks.clear();
     }
 
-    public void Update(float deltaTime) {
+    public synchronized void Update(float deltaTime) {
         for (Tank tank : tanks) {
             tank.Update(deltaTime);
         }
     }
 
-    public void Draw(Graphics g) {
+    public synchronized void Draw(Graphics g) {
         if (tanks.isEmpty())
             return;
         for (Tank tank : tanks) {
@@ -56,7 +57,7 @@ public class TankManager {
         }
     }
 
-    public Tank GetTankByPosition(int x, int y) {
+    public synchronized Tank GetTankByPosition(int x, int y) {
         for (Tank tank : tanks) {
             if (tank.x == x && tank.y == y) {
                 return tank;
@@ -65,13 +66,13 @@ public class TankManager {
         return null;
     }
 
-    public int GetIndex(Tank tank) {
+    public synchronized int GetIndex(Tank tank) {
         if (tank == null)
             return -1;
         return tanks.indexOf(tank);
     }
 
-    public void SpawnRandom(Tank tank) {
+    public synchronized void SpawnRandom(Tank tank) {
         boolean found = false;
         tank.SetPosition(-1, -1);
         do {
@@ -85,7 +86,7 @@ public class TankManager {
         } while (!found);
     }
 
-    public void SetTankList(TankTransform[] ttl) {
+    public synchronized void SetTankList(Transform[] ttl) {
         if (ttl == null || ttl.length == 0)
             return;
         if (ttl.length > tanks.size()) {
@@ -102,5 +103,13 @@ public class TankManager {
             TankType t = ScoreManager.GetInstance().id == ttl[i].id ? TankType.PLAYER : TankType.ENEMY;
             tanks.get(i).SetState(ttl[i].id, ttl[i].x, ttl[i].y, ttl[i].direction, t);
         }
+    }
+
+    public synchronized Transform[] GetTankList() {
+        Transform[] ttl = new Transform[tanks.size()];
+        for (int i = 0; i < tanks.size(); i++) {
+            ttl[i] = new Transform(tanks.get(i).id, tanks.get(i).x, tanks.get(i).y, tanks.get(i).direction);
+        }
+        return ttl;
     }
 }

@@ -26,9 +26,8 @@ public class GamePanel extends JPanel {
         _isRunning = true;
         if (_isHost) {
             Maze.GetInstance().Generate((int) (Math.random() * 10000));
-            int id = ScoreManager.GetInstance().id;
+            int id = 0;
             TankManager.GetInstance().CreateTank(id, ScoreManager.GetInstance().GetName(id)).SpawnRandom();
-            ;
         }
     }
 
@@ -53,20 +52,12 @@ public class GamePanel extends JPanel {
     }
 
     private void Update() {
-        // if (_gameInput.GetKey(KeyEvent.VK_SPACE)) {
-        // TankManager.GetInstance().GetTank(0).Shoot();
-        // }
-
-        // if (_gameInput.GetKey(KeyEvent.VK_UP)) {
-        // TankManager.GetInstance().GetTank(0).Move(Direction.UP);
-        // } else if (_gameInput.GetKey(KeyEvent.VK_DOWN)) {
-        // TankManager.GetInstance().GetTank(0).Move(Direction.DOWN);
-        // } else if (_gameInput.GetKey(KeyEvent.VK_LEFT)) {
-        // TankManager.GetInstance().GetTank(0).Move(Direction.LEFT);
-        // } else if (_gameInput.GetKey(KeyEvent.VK_RIGHT)) {
-        // TankManager.GetInstance().GetTank(0).Move(Direction.RIGHT);
-        // }
         if (_isHost) {
+            if (TankManager.GetInstance().GetTank(0) != null) {
+                if (_gameInput.GetKey(KeyEvent.VK_UP)) {
+                    TankManager.GetInstance().GetTank(0).Move(Direction.UP);
+                }
+            }
             TankManager.GetInstance().Update(_deltaTime);
             BulletManager.GetInstance().Update(_deltaTime);
         }
