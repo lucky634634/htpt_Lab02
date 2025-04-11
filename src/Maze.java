@@ -9,6 +9,7 @@ import java.util.Stack;
 
 public class Maze {
     public final ArrayList<Cell> cells = new ArrayList<>();
+    public int seed = -1;
 
     private static Maze _instance = null;
 
@@ -25,6 +26,7 @@ public class Maze {
     }
 
     public void Generate(int seed) {
+        this.seed = seed;
         cells.clear();
         for (int i = 0; i < Setting.MAZE_WIDTH * Setting.MAZE_HEIGHT; i++) {
             cells.add(new Cell(i % Setting.MAZE_WIDTH, i / Setting.MAZE_WIDTH));

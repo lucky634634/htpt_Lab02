@@ -53,4 +53,11 @@ public class BulletManager {
         }
         return transforms;
     }
+
+    public synchronized void SetBulletList(Transform[] transforms) {
+        bullets.clear();
+        for (Transform t : transforms) {
+            bullets.add(new Bullet(t.x, t.y, t.direction, t.id));
+        }
+    }
 }

@@ -7,9 +7,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
-public class ScorePanel extends JPanel {
+public class ScorePanel extends JPanel implements ScoreListener {
     private final JTable _scoreTable;
-    private final String[] _columnNames = { "Name", "Score", "Type" };
+    private final String[] _columnNames = { "Name", "Score" };
 
     public ScorePanel() {
         setLayout(new BorderLayout());
@@ -25,13 +25,21 @@ public class ScorePanel extends JPanel {
         _scoreTable.setCellSelectionEnabled(false);
         _scoreTable.setEnabled(false);
         _scoreTable.setForeground(Color.BLACK);
-    }
-
-    public void Init() {
         _scoreTable.setModel(new DefaultTableModel(null, _columnNames));
+        ScoreManager.GetInstance().AddScoreListener(this);
     }
 
-    public void Update(ScoreObject[] scores) {
+    public synchronized void Update(ScoreObject[] scores) {
+        DefaultTableModel model = (DefaultTableModel) _scoreTable.getModel();
+        model.setRowCount(0);
+        for (ScoreObject score : scores) {
+            model.addRow(new Object[] { score.name, score.score });
+        }
+    }
+
+    @Override
+    public void OnScoreChange(ScoreObject[] scores) {
+        Update(scores);
     }
 
 }

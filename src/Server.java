@@ -1,8 +1,11 @@
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Server {
@@ -11,7 +14,8 @@ public class Server {
     private int _port = 5000;
     private AtomicBoolean _running = new AtomicBoolean(false);
     private ServerSocket _serverSocket = null;
-    private ArrayList<Thread> _clientThreads = new ArrayList<>();
+    private final ArrayList<Thread> _clientThreads = new ArrayList<>();
+    private final Map<Integer, Socket> _clientSockets = new HashMap<>();
 
     private Server() {
     }
@@ -31,8 +35,8 @@ public class Server {
             return;
         }
         _port = port;
-        Thread t = new Thread(this::Run);
-        t.setDaemon(true);
+        Thread t = new Thread(() -> Run());
+        // t.setDaemon(true);
         t.start();
     }
 
@@ -54,7 +58,10 @@ public class Server {
             while (_running.get()) {
                 Socket socket = _serverSocket.accept();
                 System.out.println("Client connected: " + socket.getInetAddress());
-                _clientThreads.add(new Thread(() -> HandleClient(socket)));
+                Thread t = new Thread(() -> HandleClient(socket));
+                t.setDaemon(true);
+                _clientThreads.add(t);
+                t.start();
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -62,17 +69,28 @@ public class Server {
     }
 
     private void HandleClient(Socket socket) {
-        while (_running.get()) {
+        int id = ScoreManager.GetInstance().CreateNewPlayer(null);
+        String name = "";
+        _clientSockets.put(id, socket);
+        boolean running = true;
+        while (_running.get() && running) {
             try {
                 ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
                 try {
-
                     Object obj = ois.readObject();
-                    if (obj instanceof ClientMessage) {
-                        ClientMessage message = (ClientMessage) obj;
-                        System.out.println("Received message from client: " + message);
-                    } else if (obj instanceof String) {
-                        System.out.println("Received string from client: " + obj);
+                    System.out.println("Received object from client: " + obj.toString());
+                    if (obj instanceof RequestId) {
+                        System.out.println("Received request ID from client: " + ((RequestId) obj).name);
+                        name = ((RequestId) obj).name;
+                        ScoreManager.GetInstance().SetName(id, ((RequestId) obj).name);
+                        TankManager.GetInstance().CreateTank(id, ((RequestId) obj).name).SpawnRandom();
+                        SendMessage(new ResponseId(id), id);
+                        SendMessage(new ServerMessage(Maze.GetInstance().seed, TankManager.GetInstance().GetTankList(),
+                                BulletManager.GetInstance().GetBulletTransforms(),
+                                ScoreManager.GetInstance().GetScores()), id);
+                        LogHandler.GetInstance().Log("New player ID: " + id);
+                    } else if (obj instanceof Input) {
+                        InputQueue.GetInstance().Add((Input) obj);
                     } else {
                         System.out.println("Unknown object received from client: " + obj);
                     }
@@ -82,6 +100,11 @@ public class Server {
 
             } catch (IOException e) {
                 e.printStackTrace();
+                running = false;
+                _clientSockets.remove(id);
+                TankManager.GetInstance().RemoveTank(id);
+                ScoreManager.GetInstance().RemovePlayer(id);
+                LogHandler.GetInstance().Log("Player " + name + " left");
             }
         }
     }
@@ -89,6 +112,35 @@ public class Server {
     public <T> void SendMessage(T msg, int id) {
         if (!_running.get() || _serverSocket == null || _serverSocket.isClosed()) {
             return;
+        }
+
+        try {
+            Socket client = _clientSockets.get(id);
+            if (client != null) {
+                ObjectOutputStream oos = new ObjectOutputStream(client.getOutputStream());
+                oos.writeObject(msg);
+                oos.flush();
+            } else {
+                System.out.println("Client with ID " + id + " not found.");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public <T> void SendAll(T msg) {
+        if (!_running.get() || _serverSocket == null || _serverSocket.isClosed()) {
+            return;
+        }
+
+        for (Socket client : _clientSockets.values()) {
+            try {
+                ObjectOutputStream oos = new ObjectOutputStream(client.getOutputStream());
+                oos.writeObject(msg);
+                oos.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

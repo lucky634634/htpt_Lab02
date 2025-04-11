@@ -9,7 +9,7 @@ public class InputQueue {
     private InputQueue() {
     }
 
-    public InputQueue GetInstance() {
+    public static InputQueue GetInstance() {
         if (_instance == null) {
             synchronized (InputQueue.class) {
                 _instance = new InputQueue();
@@ -25,14 +25,15 @@ public class InputQueue {
     }
 
     public void Resolve() {
-        Queue<Input> buffer;
+        Queue<Input> buffer = new LinkedList<>();
         synchronized (_buffer) {
-            buffer = _buffer;
+            buffer.addAll(_buffer);
             _buffer.clear();
         }
         while (!buffer.isEmpty()) {
             Input input = buffer.poll();
             if (input != null) {
+                System.out.println("Processing input: " + input);
                 Tank t = TankManager.GetInstance().GetTank(input.id);
                 if (t != null) {
                     t.Move(input.dir);

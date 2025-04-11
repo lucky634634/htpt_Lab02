@@ -22,6 +22,7 @@ public class TankManager {
 
     public synchronized Tank CreateTank(int id, String name) {
         Tank tank = new Tank(id, name);
+        tank.tankType = id == 0 ? TankType.PLAYER : TankType.ENEMY;
         tanks.add(tank);
         return tank;
     }
@@ -37,6 +38,15 @@ public class TankManager {
 
     public synchronized void RemoveTank(Tank tank) {
         tanks.remove(tank);
+    }
+
+    public synchronized void RemoveTank(int id) {
+        for (int i = 0; i < tanks.size(); i++) {
+            if (tanks.get(i).id == id) {
+                tanks.remove(i);
+                return;
+            }
+        }
     }
 
     public synchronized void Clear() {
@@ -89,20 +99,15 @@ public class TankManager {
     public synchronized void SetTankList(Transform[] ttl) {
         if (ttl == null || ttl.length == 0)
             return;
-        if (ttl.length > tanks.size()) {
-            for (int i = tanks.size(); i < ttl.length; i++) {
-                tanks.add(new Tank());
-            }
-        } else if (ttl.length < tanks.size()) {
-            for (int i = ttl.length; i < tanks.size(); i++) {
-                tanks.remove(tanks.size() - 1);
-            }
+        tanks.clear();
+        for (Transform t : ttl) {
+            Tank tank = new Tank(t.id, ScoreManager.GetInstance().GetName(t.id));
+            tank.tankType = ScoreManager.GetInstance().id == t.id ? TankType.PLAYER : TankType.ENEMY;
+            tank.SetPosition(t.x, t.y);
+            tank.direction = t.direction;
+            tanks.add(tank);
         }
 
-        for (int i = 0; i < ttl.length; i++) {
-            TankType t = ScoreManager.GetInstance().id == ttl[i].id ? TankType.PLAYER : TankType.ENEMY;
-            tanks.get(i).SetState(ttl[i].id, ttl[i].x, ttl[i].y, ttl[i].direction, t);
-        }
     }
 
     public synchronized Transform[] GetTankList() {

@@ -11,6 +11,7 @@ public class ScoreManager {
     private int _currentId = 0;
 
     private Queue<Integer> _freeIds = new LinkedList<>();
+    private final ArrayList<ScoreListener> _scoreListeners = new ArrayList<>();
 
     private ScoreManager() {
         id = 0;
@@ -26,6 +27,14 @@ public class ScoreManager {
         return _instance;
     }
 
+    public ScoreObject[] GetScores() {
+        ScoreObject[] scores = new ScoreObject[_scores.size()];
+        for (int i = 0; i < scores.length; i++) {
+            scores[i] = _scores.get(i);
+        }
+        return scores;
+    }
+
     public synchronized int CreateNewPlayer(String name) {
         if (_freeIds.isEmpty()) {
             int id = _currentId++;
@@ -36,7 +45,18 @@ public class ScoreManager {
         int id = _freeIds.poll();
         ScoreObject score = new ScoreObject(id, name, 0);
         _scores.add(score);
+        UpdateListener();
         return id;
+    }
+
+    public synchronized void SetName(int id, String name) {
+        for (ScoreObject score : _scores) {
+            if (score.id == id) {
+                score.name = name;
+                UpdateListener();
+                return;
+            }
+        }
     }
 
     public synchronized void RemovePlayer(int id) {
@@ -46,12 +66,15 @@ public class ScoreManager {
         if (_scores.removeIf(score -> score.id == id)) {
             _freeIds.add(id);
         }
+        UpdateListener();
     }
 
     public synchronized void UpdateList(ScoreObject[] scores) {
-        for (int i = 0; i < scores.length; i++) {
-            scores[i] = _scores.get(i);
+        _scores.clear();
+        for (ScoreObject score : scores) {
+            _scores.add(score);
         }
+        UpdateListener();
     }
 
     public synchronized String GetName(int id) {
@@ -61,5 +84,25 @@ public class ScoreManager {
             }
         }
         return null;
+    }
+
+    public void AddScoreListener(ScoreListener scoreListener) {
+        _scoreListeners.add(scoreListener);
+        UpdateListener();
+    }
+
+    private void UpdateListener() {
+        new Thread(() -> HandleListener()).start();
+    }
+
+    private void HandleListener() {
+        ScoreObject[] scores = new ScoreObject[_scores.size()];
+        for (int i = 0; i < scores.length; i++) {
+            scores[i] = _scores.get(i);
+        }
+        for (ScoreListener listener : _scoreListeners) {
+
+            listener.OnScoreChange(scores);
+        }
     }
 }

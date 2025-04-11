@@ -23,12 +23,18 @@ public class Client {
         return _instance;
     }
 
-    public void Start(int port, String serverAddr, int serverPort) {
+    public void Start(String serverAddr, int serverPort) {
         _serverAddr = serverAddr;
         _serverPort = serverPort;
-        Thread t = new Thread(this::Run);
-        t.setDaemon(true);
+        Thread t = new Thread(() -> Run());
+        // t.setDaemon(true);
         t.start();
+        try {
+            Thread.sleep(1000);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void Stop() {
@@ -36,15 +42,25 @@ public class Client {
     }
 
     private void Run() {
-        _running.set(true);
         try {
             _socket = new Socket(InetAddress.getByName(_serverAddr), _serverPort);
+            _running.set(true);
             while (_running.get()) {
                 ObjectInputStream ois = new ObjectInputStream(_socket.getInputStream());
                 try {
                     Object obj = ois.readObject();
-                    if (obj instanceof ServerMessage) {
-                        System.out.println("Received message: " + obj.toString());
+                    if (obj instanceof ResponseId) {
+                        ScoreManager.GetInstance().id = ((ResponseId) obj).id;
+                        System.out.println("Received new player ID: " + ScoreManager.GetInstance().id);
+                        LogHandler.GetInstance().Log("Connected");
+                    } else if (obj instanceof ServerMessage) {
+                        if (((ServerMessage) obj).seed != Maze.GetInstance().seed) {
+                            Maze.GetInstance().Generate(((ServerMessage) obj).seed);
+                        }
+                        ScoreManager.GetInstance().UpdateList(((ServerMessage) obj).scores);
+                        TankManager.GetInstance().SetTankList(((ServerMessage) obj).tanks);
+                        BulletManager.GetInstance().SetBulletList(((ServerMessage) obj).bullets);
+
                     } else if (obj instanceof String) {
                         System.out.println("Received string: " + obj.toString());
                     } else {
@@ -55,6 +71,8 @@ public class Client {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            _running.set(false);
+            LogHandler.GetInstance().Log("Connection lost");
         }
     }
 
@@ -64,10 +82,12 @@ public class Client {
         }
 
         try {
+            System.out.println("Sending message: " + msg.toString());
             ObjectOutputStream oos = new ObjectOutputStream(_socket.getOutputStream());
             oos.writeObject(msg);
             oos.flush();
         } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

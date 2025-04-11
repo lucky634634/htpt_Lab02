@@ -1,7 +1,6 @@
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.event.KeyEvent;
 import javax.swing.JPanel;
 
 public class GamePanel extends JPanel {
@@ -53,13 +52,45 @@ public class GamePanel extends JPanel {
 
     private void Update() {
         if (_isHost) {
-            if (TankManager.GetInstance().GetTank(0) != null) {
-                if (_gameInput.GetKey(KeyEvent.VK_UP)) {
-                    TankManager.GetInstance().GetTank(0).Move(Direction.UP);
-                }
+            Direction dir = Direction.NONE;
+            boolean shoot = _gameInput.GetKey(Setting.KEY_FIRE);
+            if (_gameInput.GetKey(Setting.KEY_LEFT)) {
+                dir = Direction.LEFT;
+            } else if (_gameInput.GetKey(Setting.KEY_RIGHT)) {
+                dir = Direction.RIGHT;
+            } else if (_gameInput.GetKey(Setting.KEY_UP)) {
+                dir = Direction.UP;
+            } else if (_gameInput.GetKey(Setting.KEY_DOWN)) {
+                dir = Direction.DOWN;
             }
+
+            if (dir != Direction.NONE || shoot) {
+                System.out.println("Updating tank 0");
+                InputQueue.GetInstance().Add(new Input(0, dir, shoot, false));
+            }
+            InputQueue.GetInstance().Resolve();
             TankManager.GetInstance().Update(_deltaTime);
             BulletManager.GetInstance().Update(_deltaTime);
+            Server.GetInstance()
+                    .SendAll(new ServerMessage(Maze.GetInstance().seed, TankManager.GetInstance().GetTankList(),
+                            BulletManager.GetInstance().GetBulletTransforms(), ScoreManager.GetInstance().GetScores()));
+        } else {
+            Direction dir = Direction.NONE;
+            boolean shoot = _gameInput.GetKey(Setting.KEY_FIRE);
+            if (_gameInput.GetKey(Setting.KEY_LEFT)) {
+                dir = Direction.LEFT;
+            } else if (_gameInput.GetKey(Setting.KEY_RIGHT)) {
+                dir = Direction.RIGHT;
+            } else if (_gameInput.GetKey(Setting.KEY_UP)) {
+                dir = Direction.UP;
+            } else if (_gameInput.GetKey(Setting.KEY_DOWN)) {
+                dir = Direction.DOWN;
+            }
+
+            if (dir != Direction.NONE || shoot) {
+                System.out.println("Updating tank 0");
+                Client.GetInstance().SendMessage(new Input(ScoreManager.GetInstance().id, dir, shoot, false));
+            }
         }
     }
 

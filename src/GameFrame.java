@@ -35,7 +35,6 @@ public class GameFrame extends JFrame implements Runnable {
     @Override
     public void run() {
         _gamePanel.Setup();
-        _scorePanel.Init();
         _consolePanel.Init();
         _gamePanel.Run();
     }

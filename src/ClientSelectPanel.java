@@ -44,6 +44,7 @@ public class ClientSelectPanel extends JPanel {
                         || _clientNameField.getText().isEmpty() || !CheckNumber(_serverPortField.getText()))
                     return;
 
+                _parent.setVisible(false);
                 String serverAddr = _serverAddrField.getText();
                 int serverPort = ConvertStringToInt(_serverPortField.getText());
                 String name = _clientNameField.getText();
@@ -51,6 +52,9 @@ public class ClientSelectPanel extends JPanel {
 
                 Thread t = new Thread(new GameFrame(false));
                 t.start();
+
+                Client.GetInstance().Start(serverAddr, serverPort);
+                Client.GetInstance().SendMessage(new RequestId(name));
             }
         });
         add(_connectButton);
