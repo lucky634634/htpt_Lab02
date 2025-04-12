@@ -100,7 +100,6 @@ public class Tank {
     public void Shoot() {
         if (_fireTime > 0)
             return;
-        System.out.println("Fire");
         _fireTime = 1 / Setting.TANK_FIRE_RATE;
         ScoreManager.GetInstance().IncreaseScore(id, -1);
         BulletManager.GetInstance().CreateBullet(x, y, direction, id);
@@ -113,10 +112,9 @@ public class Tank {
     }
 
     public void Hit() {
-        System.out.println("Hit");
         TankManager.GetInstance().SpawnRandom(this);
         ScoreManager.GetInstance().IncreaseScore(id, -5);
-        LogHandler.GetInstance().Log("Tank " + id + " was hit");
+        LogHandler.GetInstance().LogAll("Tank " + id + " was hit");
     }
 
     public void SpawnRandom() {

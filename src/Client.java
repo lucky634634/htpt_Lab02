@@ -1,7 +1,9 @@
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Client {
@@ -46,8 +48,8 @@ public class Client {
             _socket = new Socket(InetAddress.getByName(_serverAddr), _serverPort);
             _running.set(true);
             while (_running.get()) {
-                ObjectInputStream ois = new ObjectInputStream(_socket.getInputStream());
                 try {
+                    ObjectInputStream ois = new ObjectInputStream(_socket.getInputStream());
                     Object obj = ois.readObject();
                     if (obj instanceof ResponseId) {
                         ScoreManager.GetInstance().id = ((ResponseId) obj).id;
@@ -60,19 +62,26 @@ public class Client {
                         ScoreManager.GetInstance().UpdateList(((ServerMessage) obj).scores);
                         TankManager.GetInstance().SetTankList(((ServerMessage) obj).tanks);
                         BulletManager.GetInstance().SetBulletList(((ServerMessage) obj).bullets);
+                    } else if (obj instanceof LogMessage) {
+                        String log = ((LogMessage) obj).logString;
+                        LogHandler.GetInstance().Log(log);
+                    }
 
-                    } else if (obj instanceof String) {
+                    else if (obj instanceof String) {
                         System.out.println("Received string: " + obj.toString());
                     } else {
                         System.out.println("Received unknown object: " + obj.toString());
                     }
                 } catch (Exception e) {
+                    Maze.GetInstance().seed = -1;
                 }
             }
-        } catch (Exception e) {
+        } catch (SocketException e) {
             e.printStackTrace();
             _running.set(false);
             LogHandler.GetInstance().Log("Connection lost");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

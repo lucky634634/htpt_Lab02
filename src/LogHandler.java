@@ -24,7 +24,12 @@ public class LogHandler {
     }
 
     public void Log(String message) {
-        new Thread(() -> HandleLog(message)).start();
+        HandleLog(message);
+    }
+
+    public void LogAll(String msg) {
+        Log(msg);
+        Server.GetInstance().SendAll(new LogMessage(msg));
     }
 
     private void HandleLog(String message) {
