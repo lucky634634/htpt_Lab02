@@ -6,10 +6,11 @@ public class ScoreManager {
 
     private static ScoreManager _instance = null;
     private final ArrayList<ScoreObject> _scores = new ArrayList<>();
+    // Id hiện tại
     public int id = 0;
 
-    private int _currentId = 0;
-
+    // Tạo id mới (Server)
+    private int _nextId = 0;
     private Queue<Integer> _freeIds = new LinkedList<>();
     private final ArrayList<ScoreListener> _scoreListeners = new ArrayList<>();
 
@@ -37,7 +38,7 @@ public class ScoreManager {
 
     public synchronized int CreateNewPlayer(String name) {
         if (_freeIds.isEmpty()) {
-            int id = _currentId++;
+            int id = _nextId++;
             ScoreObject score = new ScoreObject(id, name, 0);
             _scores.add(score);
             return id;

@@ -91,7 +91,7 @@ public class Server {
                         // TankManager.GetInstance().GetTankList(),
                         // BulletManager.GetInstance().GetBulletTransforms(),
                         // ScoreManager.GetInstance().GetScores()), id);
-                        LogHandler.GetInstance().Log("New player ID: " + id);
+                        LogHandler.GetInstance().LogAll("New player " + name + " with ID " + id + " entered");
                         ScoreManager.GetInstance().UpdateListener();
                     } else if (obj instanceof Input) {
                         InputQueue.GetInstance().Add((Input) obj);
