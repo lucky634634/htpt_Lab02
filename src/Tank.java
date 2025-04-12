@@ -79,7 +79,7 @@ public class Tank {
         if (_moveTime > 0)
             return;
         _moveTime = 1 / Setting.TANK_SPEED;
-        if (Maze.GetInstance().CheckMove(x, y, dir)) {
+        if (Maze.GetInstance().CheckMove(x, y, dir) && TankManager.GetInstance().CheckNextPos(x, y, dir)) {
             switch (dir) {
                 case UP -> y -= 1;
                 case DOWN -> y += 1;
