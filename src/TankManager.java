@@ -27,6 +27,19 @@ public class TankManager {
         return tank;
     }
 
+    public boolean CheckNextPos(int x, int y, Direction dir) {
+        switch (dir) {
+            case UP -> y -= 1;
+            case LEFT -> x -= 1;
+            case DOWN -> y += 1;
+            case RIGHT -> x += 1;
+            default -> {
+            }
+        }
+
+        return TankManager.GetInstance().GetTankByPosition(x, y) == null;
+    }
+
     public synchronized Tank GetTank(int id) {
         for (Tank tank : tanks) {
             if (tank.id == id) {

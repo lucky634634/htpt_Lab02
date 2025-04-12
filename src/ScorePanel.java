@@ -19,6 +19,7 @@ public class ScorePanel extends JPanel implements ScoreListener {
         JScrollPane scoreScroll = new JScrollPane(_scoreTable);
         add(scoreScroll, BorderLayout.CENTER);
         setFocusable(false);
+        setEnabled(false);
         _scoreTable.setRowSelectionAllowed(false);
         _scoreTable.setColumnSelectionAllowed(false);
         _scoreTable.setCellSelectionEnabled(false);
