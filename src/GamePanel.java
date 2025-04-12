@@ -67,6 +67,9 @@ public class GamePanel extends JPanel {
             if (dir != Direction.NONE || shoot) {
                 InputQueue.GetInstance().Add(new Input(0, dir, shoot, false));
             }
+
+
+
             InputQueue.GetInstance().Resolve();
             TankManager.GetInstance().Update(_deltaTime);
             BulletManager.GetInstance().Update(_deltaTime);
