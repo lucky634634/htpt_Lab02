@@ -65,7 +65,6 @@ public class GamePanel extends JPanel {
             }
 
             if (dir != Direction.NONE || shoot) {
-                System.out.println("Updating tank 0");
                 InputQueue.GetInstance().Add(new Input(0, dir, shoot, false));
             }
             InputQueue.GetInstance().Resolve();
