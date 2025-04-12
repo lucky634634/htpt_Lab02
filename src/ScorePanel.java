@@ -37,10 +37,6 @@ public class ScorePanel extends JPanel implements ScoreListener {
             data[i][0] = scores[i].name;
             data[i][1] = scores[i].score;
         }
-        if (scores.length == 0) {
-            // Add an empty row if there are no scores
-            data = new Object[][] { { "", "" } };
-        }
 
         DefaultTableModel model = (DefaultTableModel) _scoreTable.getModel();
         model.setRowCount(0);
